@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/pages/templates/masterTemplate.xhtml">
+	<ui:define name="content">
+		<h:form>
+			<p:fieldset legend="查询条件">
+				<h:panelGrid columns="10">
+					<h:outputLabel value="起始时间：" />
+					<p:calendar value="#{statRank.queryParametersMo.startTime}"
+						locale="zh_CN" pattern="yyyy-MM-dd" title="起始时间" navigator="true"></p:calendar>
+					<h:outputLabel value="终止时间：" />
+					<p:calendar value="#{statRank.queryParametersMo.endTime}"
+						locale="zh_CN" pattern="yyyy-MM-dd" title="终止时间" navigator="true"></p:calendar>
+					<p:commandButton value="查询" icon="ui-icon ui-icon-search"
+						actionListener="#{statRank.getRankGoodsSaleAmounts}"
+						update="rankGoodsSaleAmountTable msg">
+					</p:commandButton>
+					<p:commandLink value="查询昨天"
+						actionListener="#{statRank.getRankGoodsSaleAmounts}"
+						update="rankGoodsSaleAmountTable msg">
+						<f:param name="type" value="1" />
+					</p:commandLink>
+					<p:commandLink value="查询上周"
+						actionListener="#{statRank.getRankGoodsSaleAmounts}"
+						update="rankGoodsSaleAmountTable msg">
+						<f:param name="type" value="2" />
+					</p:commandLink>
+					<p:commandLink value="查询上月"
+						actionListener="#{statRank.getRankGoodsSaleAmounts}"
+						update="rankGoodsSaleAmountTable msg">
+						<f:param name="type" value="3" />
+					</p:commandLink>
+					<h:outputText value="亲，别忘了点击[查询]哦！"
+						style="color:OrangeRed;font-weight:bold;" />
+					<p:messages id="msg" showDetail="true" />
+				</h:panelGrid>
+			</p:fieldset>
+			<p:separator />
+			<div>
+				<p:dataTable border="1" id="rankGoodsSaleAmountTable"
+					value="#{statRank.rankGoodsSaleAmountResultMo.rankGoodsSaleAmountMoList}"
+					var="goodsSaleAmountItem">
+					<f:facet name="header">  
+           			商品销售金额排行榜
+       	 			</f:facet>
+					<p:columnGroup type="header">
+						<p:row>
+							<p:column headerText="商品标题（可点击查看）" />
+							<p:column headerText="商品ID" />
+							<p:column headerText="商品图片" />
+							<p:column headerText="商品销售金额（元）" />
+						</p:row>
+					</p:columnGroup>
+					<p:column id="goodsId">
+						<p:lightBox iframe="true" width="80%" height="80%">
+							<h:outputLink
+								value="http://item.taobao.com/item.htm?id=#{goodsSaleAmountItem.numIid}">
+								<h:outputText value="#{goodsSaleAmountItem.title}"
+									title="点击可以查看明细" />
+							</h:outputLink>
+						</p:lightBox>
+					</p:column>
+					<p:column id="itemid">
+						<h:outputText value="#{goodsSaleAmountItem.numIid}" />
+					</p:column>
+					<p:column id="pic">
+						<p:lightBox>
+							<h:outputLink value="#{goodsSaleAmountItem.picPath}" title="查看大图">
+								<p:graphicImage height="120" width="120"
+									value="#{goodsSaleAmountItem.picPath}" />
+							</h:outputLink>
+						</p:lightBox>
+					</p:column>
+					<p:column id="total">
+						<h:outputText value="#{goodsSaleAmountItem.totalAmount}"></h:outputText>
+					</p:column>
+					<f:facet name="footer">  
+           			商品销售金额排行榜
+       	 			</f:facet>
+				</p:dataTable>
+			</div>
+			<p:ajaxStatus
+				style="position:absolute;width:61px;height:59px;z-index:20;left:400px;top:200px">
+				<f:facet name="start">
+					<h:graphicImage width="199" height="64"
+						value="../img/ajax_loader.gif" />
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

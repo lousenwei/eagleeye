@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<link rel="stylesheet" type="text/css" href="../style.css" />
+	<ui:include src="version.xhtml" />
+</h:head>
+<body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="70">
+			<ui:include src="header.xhtml"></ui:include>
+		</p:layoutUnit>
+
+		<p:layoutUnit position="south" size="25">
+			<ui:include src="footer.xhtml"></ui:include>
+		</p:layoutUnit>
+
+		<p:layoutUnit position="east" size="3">
+		</p:layoutUnit>
+
+		<p:layoutUnit position="west" size="225">
+			<ui:include src="contact.xhtml" />
+		</p:layoutUnit>
+		<p:layoutUnit position="center">
+			<ui:insert name="content"></ui:insert>
+		</p:layoutUnit>
+	</p:layout>
+</body>
+</html>

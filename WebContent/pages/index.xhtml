@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+
+</h:head>
+
+<h:body>
+	<ui:composition template="/pages/templates/masterTemplate.xhtml">
+		<ui:define name="content">
+			<script type="text/javascript">
+				var Scroll = new function() {
+					this.delay = 2000; // 延迟的时间
+					this.auto = 30; // 延迟的时间
+					this.height = 20; // 行的高度
+					this.step = 4; // 步长
+					this.curHeight = 0;
+					this.stimer = null;
+					this.timer = null;
+					this.start = function() {
+						// 开始翻页，调用move方法
+						var self = this;
+						setTimeout(function() {
+							self.move();
+						}, this.delay);
+					};
+					this.move = function() {
+						var self = this;
+						if (this.curHeight == this.height)
+						// 如果显示完一行
+						{
+							this.timer = setTimeout(function() {
+								// 使用定时器，定时下一行的翻页时间
+								self.move();
+							}, this.delay);
+							this.curHeight = 0;
+							if (this.element.scrollTop >= this.element.scrollHeight
+									- this.height) {
+								// 滚动信息已经完毕
+								this.stop();
+								setTimeout(function() {
+									self.element.scrollTop = 0;
+									self.start();
+								}, this.delay);
+							}
+							return true;
+						}
+						this.element.scrollTop += this.step;
+						this.curHeight += this.step;
+						this.timer = setTimeout(function() {
+							// 设置自动翻页定时器
+							self.move();
+						}, this.auto);
+					};
+					this.stop = function() {
+						// 清除定时期，停止滚动翻页
+						clearTimeout(this.timer);
+					};
+				};
+			</script>
+			<h:form>
+				<h2 align="center">欢迎使用鹰眼客服绩效管理系统！</h2>
+				<p:separator />
+				<p:panel header="公告栏">
+					<div id="divMsg" onmouseover="Scroll.stop();"
+						onmouseout="Scroll.start();">
+						<ui:repeat var="post" value="#{indexBean.posts}">
+							<div>
+								<a href="#{post.url}"
+									style="color: OrangeRed; font-size: medium; font-weight: bold;">#{post.content}</a>
+							</div>
+						</ui:repeat>
+					</div>
+					<script type="text/javascript">
+						Scroll.element = document.getElementById('divMsg');
+						Scroll.start();
+					</script>
+				</p:panel>
+				<h:panelGrid columns="2">
+					<p:panel rendered="#{!user.hasUpdate}" header="数据更新状态"
+						style="height:120px;width:400px;overflow:auto;">
+						<h:outputLabel value="亲，系统后台正在更新您的数据哦!"
+							style="color:OrangeRed;font-size:25px;font-weight:bold;" />
+						<h:graphicImage value="../img/loading.gif" />
+					</p:panel>
+					<p:panel rendered="#{user.hasUpdate}" header="数据更新状态"
+						style="height:140px;width:420px;">
+						<h:outputLabel value="亲，您的数据已经更新完毕!"
+							style="color:Black;font-size:25px;font-weight:bold;overflow:auto;" />
+						<h:graphicImage value="../img/loading.gif" />
+					</p:panel>
+					<p:panel header="帮助与提示" style="height:140px;overflow:auto;">
+						<div>
+							鹰眼客服绩效系统采用<b
+								style="color: OrangeRed; font-size: large; font-weight: bold;">全自动后台</b>更新数据的方式，只要亲登录系统就会帮您自动收集数据，计算报表。
+						</div>
+						<div>
+							首次客服绩效数据的抽取与计算需要<b
+								style="color: OrangeRed; font-size: large; font-weight: bold;">10至60分钟</b>左右完成哦。以后每次登陆都会在后台自动帮亲更新增量数据哦！
+						</div>
+						<div>
+							数据更新时间为<b
+								style="color: OrangeRed; font-size: large; font-weight: bold;">8-23点</b>，如果不在此时间段内，亲可以明天来查看数据更新结果哦。
+						</div>
+						<div>请耐心等待，谢谢！</div>
+					</p:panel>
+
+				</h:panelGrid>
+				<h:panelGrid columns="3">
+					<p:panel header="数据已更新日期" style="height:340px;width:340px;overflow:auto;">
+						<ui:repeat var="log" value="#{indexBean.updateLogs}">
+							<h:selectOneMenu value="#{log.id.item}" disabled="true">
+								<f:selectItem itemLabel="客服接待客户数据" itemValue="RECEIVENUM" />
+								<f:selectItem itemLabel="客服平均等待时间数据" itemValue="AVGWAITTIME" />
+								<f:selectItem itemLabel="客服聊天对象数据" itemValue="CHATPEERS" />
+								<f:selectItem itemLabel="客服未回复客户数据" itemValue="NONREPLYNUM" />
+								<f:selectItem itemLabel="客服在线时间数据" itemValue="ONLINETIME" />
+								<f:selectItem itemLabel="客服交易数据" itemValue="TRADEINFO" />
+								<f:selectItem itemLabel="客服退款数据" itemValue="REFUND" />
+								<f:selectItem itemLabel="客服交易评价数据" itemValue="TRADERATE" />
+							</h:selectOneMenu>
+											:
+											<h:outputLabel value="#{log.updateTime}" />
+						</ui:repeat>
+					</p:panel>
+
+
+					<p:panel header="系统设置状态"
+						style="height:340px;max-width:420px;overflow:auto;">
+						<h:panelGrid>
+							<p:panel header="已添加客服设置">
+								<ui:repeat var="member" value="#{indexBean.members}">
+									<a target="_blank"
+										href="http://www.taobao.com/webww/ww.php?ver=3&amp;touid=#{member.id.serviceStaffId}&amp;siteid=cntaobao&amp;status=2&amp;charset=utf-8;"><img
+										border="0"
+										src="http://amos.alicdn.com/realonline.aw?v=2&amp;uid=#{member.id.serviceStaffId}&amp;site=cntaobao&amp;s=2&amp;charset=utf-8;"
+										alt="点击这里给我发消息" /> <h:outputLabel
+											value="#{member.id.serviceStaffId}" /> </a>
+													&nbsp;
+												</ui:repeat>
+								<br />
+								<a href="/eagle/pages/setting/StaffSetting.xhtml">点此去添加删除客服</a>
+							</p:panel>
+							<p:panel header="已添加过滤商品">
+								<ui:repeat var="item" value="#{indexBean.noCalculateItems}">
+									<p:lightBox iframe="true" width="80%" height="80%">
+										<h:outputLink
+											value="http://item.taobao.com/item.htm?id=#{item.numIid}"
+											title="过滤商品ID，点击可查看明细">
+											<h:outputText value="#{item.numIid}" />
+										</h:outputLink>
+									</p:lightBox>
+												&nbsp;
+												</ui:repeat>
+								<br />
+								<a href="/eagle/pages/setting/ItemSetting.xhtml">点此去添加删除过滤商品</a>
+							</p:panel>
+							<p:panel header="工资参数设置情况">
+								<h:outputLabel value="您已设置通用工资 模版，能够进行工资计算！"
+									rendered="#{indexBean.hasSalaryConfiged}">
+									<a href="/eagle/pages/salary/SalaryConfig.xhtml">点此查看</a>
+								</h:outputLabel>
+								<h:outputLabel value="您未设置至少一个通用工资模版，快去设置吧！"
+									style="color:OrangeRed;font-weight:bold;"
+									rendered="#{!indexBean.hasSalaryConfiged}">
+									<a href="/eagle/pages/salary/SalaryConfig.xhtml">点此设置</a>
+								</h:outputLabel>
+							</p:panel>
+						</h:panelGrid>
+					</p:panel>
+					<h:panelGrid>
+						<p:panel header="待定交易处理" id="pendingInfo" style="height:70px;overflow:auto;">
+							<h:outputLabel id="pendingInfoLabel"
+								value="亲，您有#{indexBean.pendingNum} 条待定交易。"
+								title="待定交易：指交易业务还未确定归属对象的交易。" />
+							&bsp;
+							&bsp;
+							&bsp;
+							<p:commandLink id="refreshPending"
+								rendered="#{indexBean.hasPending}" value="更新待定数据"
+								actionListener="#{indexBean.refreshPendingTrade}"
+								update="pendingInfo" />
+							<h:outputLabel value="报表状况良好!"
+								rendered="#{!indexBean.hasPending}" />
+						</p:panel>
+						<p:panel header="功能介绍" style="height:260px;overflow:auto">
+							<div style="color: OrangeRed; font-weight: bold;">
+								<img src="/eagle/pages/img/upgrade.jpg" alt="又升级啦～" />又升级啦!!!
+							</div>
+							<br />
+							<div>本次升级内容：</div>
+							<div>
+								1.<a style="color: OrangeRed; font-weight: bold;" target="_self"
+									href="/eagle/pages/setting/ReadModifySetting.xhtml">增加密码控制.</a>
+							</div>
+							<div>
+								2.<a style="color: OrangeRed; font-weight: bold;" target="_self"
+									href="/eagle/pages/setting/ReadModifySetting.xhtml">增加查看和修改密码.</a>
+							</div>
+							<div>
+								3.<a style="color: OrangeRed; font-weight: bold;" target="_self"
+									href="/eagle/pages/setting/ReadLockSetting.xhtml">增加查看页面密码控制设置.</a>
+							</div>
+							<div>4.增加淘宝子帐号登录支持.（请首先至查看权限和密码两个菜单设置密码和页面权限）</div>
+							<br />
+							<a href="/eagle/pages/description.xhtml"
+								style="color: OrangeRed; font-weight: bold;">点击查看功能介绍</a>
+						</p:panel>
+					</h:panelGrid>
+				</h:panelGrid>
+				<p:ajaxStatus
+					style="position:absolute;width:61px;height:59px;z-index:20;left:600px;top:300px">
+					<f:facet name="start">
+						<h:graphicImage width="199" height="64"
+							value="../img/ajax_loader.gif" />
+					</f:facet>
+					<f:facet name="complete">
+						<h:outputText value="" />
+					</f:facet>
+				</p:ajaxStatus>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

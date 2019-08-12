@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Insert title here</title>
+</head>
+<body>
+	<ui:composition template="/pages/templates/masterTemplate.xhtml">
+		<ui:define name="content">
+			<div>
+				<h:form>
+					<p:fieldset legend="查询区">
+						<h:panelGrid columns="3">
+							<h:inputText value="#{eagleEye.managerId}" />
+							<p:commandButton value="查询" update="updateDetailArea"
+								actionListener="#{eagleEye.queryAll}" />
+						</h:panelGrid>
+					</p:fieldset>
+					<p:accordionPanel id="updateDetailArea" multiple="true"
+						activeIndex="0,1,2,3,4">
+						<p:tab title="手工更新区">
+							<h:panelGrid columns="3">
+								<h:outputLabel value="Manager ID:" />
+								<h:inputText
+									value="#{eagleEye.queryParametersMo.staffId}"></h:inputText>
+								<br />
+								<h:outputLabel value="Shop ID:" />
+								<h:inputText value="#{eagleEye.queryParametersMo.shopId}"
+									size="100"></h:inputText>
+								<br />
+								<h:outputLabel value="Session Key:" />
+								<h:inputText value="#{eagleEye.queryParametersMo.sessionKey}"
+									size="100"></h:inputText>
+								<br />
+								<h:outputLabel value="Start Time:" />
+								<p:calendar value="#{eagleEye.queryParametersMo.startTime}"
+									pattern="yyyy-MM-dd" title="起始时间" navigator="true"
+									locale="zh_CN" />
+								<br />
+								<h:outputLabel value="End Time:" />
+								<p:calendar value="#{eagleEye.queryParametersMo.endTime}"
+									pattern="yyyy-MM-dd" title="终止时间" navigator="true"
+									locale="zh_CN" />
+								<br />
+								<h:outputLabel value="存在#{eagleEye.noOwnerTrades}条无主交易" />
+							&nbsp;&nbsp;
+						</h:panelGrid>
+
+							<h:commandButton value="导入增量数据"
+								action="#{eagleEye.loadIncrementData}"></h:commandButton>
+					&nbsp;
+					<h:commandButton value="导入全量数据" action="#{eagleEye.loadAllData}"></h:commandButton>
+					&nbsp; 
+					<h:commandButton value="跑业务归属"
+								action="#{eagleEye.runTradePersonalStatByDay}"></h:commandButton>
+					&nbsp; 
+					<h:commandButton value="跑业绩报表"
+								action="#{eagleEye.runAllStatAchievementReport}"></h:commandButton>
+
+						</p:tab>
+						<p:tab title="全量更新记录">
+							<p:dataTable id="totalUpdate" var="totalUpdate"
+								value="#{eagleEye.totalUpdateDetails}"
+								rowEditListener="#{eagleEye.rowTotalUpdateEdit}">
+								<f:facet name="header">  
+           							 全量更新记录  
+       							</f:facet>
+
+								<p:column headerText="经理ID" style="width:100px">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{totalUpdate.id.managerId}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{totalUpdate.id.managerId}"
+												style="width:100%" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="SESSIONKEY" style="width:300px">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{totalUpdate.sessionKey}"
+												style="width:100%" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{totalUpdate.sessionKey}"
+												style="width:100%" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="ShopId" style="width:200px">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{totalUpdate.shopId}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{totalUpdate.shopId}" style="width:100%" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="更新截至日" style="width:100px">
+									<p:cellEditor>
+										<f:facet name="output">
+											<p:calendar value="#{totalUpdate.id.updateTime}"
+												pattern="yyyy-MM-dd" title="更新时间" navigator="true"
+												locale="zh_CN" />
+										</f:facet>
+										<f:facet name="input">
+											<p:calendar value="#{totalUpdate.id.updateTime}"
+												pattern="yyyy-MM-dd" title="更新时间" navigator="true"
+												locale="zh_CN" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="更新客服" style="width:125px">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{totalUpdate.id.staffId}" />
+										</f:facet>
+										<f:facet name="input">
+											<h:outputText value="#{totalUpdate.id.staffId}" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="更新状态" style="width:50px">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:selectOneMenu value="#{totalUpdate.status}">
+												<f:selectItem itemLabel="未更新" itemValue="0" />
+												<f:selectItem itemLabel="成功" itemValue="1" />
+												<f:selectItem itemLabel="失败" itemValue="2" />
+											</h:selectOneMenu>
+										</f:facet>
+										<f:facet name="input">
+											<h:selectOneMenu value="#{totalUpdate.status}">
+												<f:selectItem itemLabel="未更新" itemValue="0" />
+												<f:selectItem itemLabel="成功" itemValue="1" />
+												<f:selectItem itemLabel="失败" itemValue="2" />
+											</h:selectOneMenu>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="选项" style="width:50px">
+									<p:rowEditor />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="最近5条增量更新记录">
+							<p:dataTable id="incrementUpdate" var="incremementUpdate"
+								value="#{eagleEye.incrementUpdateDetails}"
+								rowEditListener="#{eagleEye.rowIncrementUpdateEdit}">
+								<f:facet name="header">  
+           							 增量更新记录  
+       							</f:facet>
+
+								<p:column headerText="经理ID" style="width:100px">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{incremementUpdate.id.managerId}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{incremementUpdate.id.managerId}"
+												style="width:100%" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="SESSIONKEY" style="width:300px">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{incremementUpdate.sessionKey}"
+												style="width:100%" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{incremementUpdate.sessionKey}"
+												style="width:100%" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="ShopId" style="width:200px">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{incremementUpdate.shopId}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{incremementUpdate.shopId}"
+												style="width:100%" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="更新截至日" style="width:100px">
+									<p:cellEditor>
+										<f:facet name="output">
+											<p:calendar value="#{incremementUpdate.id.updateTime}"
+												pattern="yyyy-MM-dd" title="更新时间" navigator="true"
+												locale="zh_CN" />
+										</f:facet>
+										<f:facet name="input">
+											<p:calendar value="#{incremementUpdate.id.updateTime}"
+												pattern="yyyy-MM-dd" title="更新时间" navigator="true"
+												locale="zh_CN" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="更新状态" style="width:50px">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:selectOneMenu value="#{incremementUpdate.status}">
+												<f:selectItem itemLabel="未更新" itemValue="0" />
+												<f:selectItem itemLabel="成功" itemValue="1" />
+												<f:selectItem itemLabel="失败" itemValue="2" />
+											</h:selectOneMenu>
+										</f:facet>
+										<f:facet name="input">
+											<h:selectOneMenu value="#{incremementUpdate.status}">
+												<f:selectItem itemLabel="未更新" itemValue="0" />
+												<f:selectItem itemLabel="成功" itemValue="1" />
+												<f:selectItem itemLabel="失败" itemValue="2" />
+											</h:selectOneMenu>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="选项" style="width:50px">
+									<p:rowEditor />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="没有支付日期的交易列表">
+							<p:dataTable id="noPayTime" var="noPayTime"
+								value="#{eagleEye.noPaymentTimeTrades}">
+								<f:facet name="header">  
+           							 没有支付日期的交易列表
+       							</f:facet>
+								<p:column headerText="交易号" style="width:125px">
+									<h:outputText value="#{noPayTime.tid}" />
+								</p:column>
+								<p:column headerText="交易状态" style="width:200px">
+									<h:outputText value="#{noPayTime.status}" />
+								</p:column>
+								<p:column headerText="支付时间" style="width:125px">
+									<p:calendar value="#{noPayTime.payTime}" pattern="yyyy-MM-dd"
+										title="起始时间" navigator="true" locale="zh_CN" />
+								</p:column>
+								<p:column headerText="交易归属" style="width:125px">
+									<h:inputText value="#{noPayTime.tradeOwner}" />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="相关待定交易">
+							<p:dataTable id="pendingTrade" var="pendingTrade"
+								value="#{eagleEye.pendingTrades}">
+								<f:facet name="header">  
+           							 相关待定交易列表
+       							</f:facet>
+								<p:column headerText="交易号" style="width:125px">
+									<h:outputText value="#{noPayTime.tid}" />
+								</p:column>
+								<p:column headerText="交易状态" style="width:200px">
+									<h:outputText value="#{noPayTime.status}" />
+								</p:column>
+								<p:column headerText="支付时间" style="width:125px">
+									<p:calendar value="#{noPayTime.payTime}" pattern="yyyy-MM-dd"
+										title="起始时间" navigator="true" locale="zh_CN" />
+								</p:column>
+								<p:column headerText="交易归属" style="width:125px">
+									<h:inputText value="#{noPayTime.tradeOwner}" />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+					</p:accordionPanel>
+				</h:form>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

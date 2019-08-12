@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/pages/templates/masterTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="belongTypeForm">
+			<p:panel header="选择业绩归属方式">
+				<p:messages id="msg" showDetail="true" />
+				<h:panelGrid columns="1">
+					<h:panelGrid id="belongTypePanel" columns="4" columnClasses="label, value"
+						styleClass="grid">
+						<h:outputText value="业务归属方式 ：" />
+						<p:selectOneRadio value="#{belongTypeBean.belongType}"
+							layout="pageDirection">
+							<f:selectItem itemLabel="客户付款前48小时第一个与之沟通的客服" itemValue="1" />
+							<f:selectItem itemLabel="客户付款前48小时最后一个与之沟通的客服" itemValue="2" />
+							<f:selectItem itemLabel="客户付款前48小时与之沟通最多的客服" itemValue="6" />
+							<f:selectItem itemLabel="客户交易创建前48小时第一个与之沟通的客服" itemValue="3" />
+							<f:selectItem itemLabel="客户交易创建前48小时最后一个与之沟通的客服" itemValue="4" />
+							<f:selectItem itemLabel="客户交易创建前48小时与之沟通最多的客服" itemValue="5" />
+							<f:selectItem itemLabel="根据卖家插旗判定" itemValue="7" />
+							<p:ajax update="belongTypePanel" />
+						</p:selectOneRadio>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<h:panelGrid id="flagPanel" columns="2"
+							rendered="#{belongTypeBean.belongType eq 7}">
+							<p:spacer />
+							<h:outputText value="设置彩旗对应客服 ：" />
+							<img src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_1.png" />
+							<h:selectOneMenu value="#{belongTypeBean.flag_red_owner}">
+								<f:selectItem itemLabel="无" itemValue="_none" />
+								<f:selectItems value="#{belongTypeBean.allStaffs}" var="staff"
+									itemLabel="#{staff.id.serviceStaffId}" itemValue="#{staff.id.serviceStaffId}" />
+							</h:selectOneMenu>
+							<img src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_2.png" />
+							<h:selectOneMenu value="#{belongTypeBean.flag_yellow_owner}">
+								<f:selectItem itemLabel="无" itemValue="_none" />
+								<f:selectItems value="#{belongTypeBean.allStaffs}" var="staff"
+									itemLabel="#{staff.id.serviceStaffId}" itemValue="#{staff.id.serviceStaffId}" />
+							</h:selectOneMenu>
+							<img src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_3.png" />
+							<h:selectOneMenu value="#{belongTypeBean.flag_green_owner}">
+								<f:selectItem itemLabel="无" itemValue="_none" />
+								<f:selectItems value="#{belongTypeBean.allStaffs}" var="staff"
+									itemLabel="#{staff.id.serviceStaffId}" itemValue="#{staff.id.serviceStaffId}" />
+							</h:selectOneMenu>
+							<img src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_4.png" />
+							<h:selectOneMenu value="#{belongTypeBean.flag_blue_owner}">
+								<f:selectItem itemLabel="无" itemValue="_none" />
+								<f:selectItems value="#{belongTypeBean.allStaffs}" var="staff"
+									itemLabel="#{staff.id.serviceStaffId}" itemValue="#{staff.id.serviceStaffId}" />
+							</h:selectOneMenu>
+							<img src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_5.png" />
+							<h:selectOneMenu value="#{belongTypeBean.flag_pupple_owner}">
+								<f:selectItem itemLabel="无" itemValue="_none" />
+								<f:selectItems value="#{belongTypeBean.allStaffs}" var="staff"
+									itemLabel="#{staff.id.serviceStaffId}" itemValue="#{staff.id.serviceStaffId}" />
+							</h:selectOneMenu>
+						</h:panelGrid>
+						<p:commandButton value="保存" disabled="#{naviBean.modifyLock}"
+							actionListener="#{belongTypeBean.saveBelongType}"
+							update=":belongTypeForm:msg" />
+						<p:commandButton value="刷新本月归属与业绩" rendered="false"
+							actionListener="#{belongTypeBean.reCalculate}"
+							onclick="pbAjax.start();" />
+						<br />
+						<h:outputLabel rendered="false"
+							value="点击[刷新本月归属与业绩]按钮后，系统会刷新本月数据，如果交易量很大的话可能时间较久，请亲耐心等待！" />
+					</h:panelGrid>
+					<p:panel header="更新详情" rendered="false">
+						更新进度：
+						<p:progressBar widgetVar="pbAjax" ajax="true"
+							value="#{belongTypeBean.progress}" />
+					</p:panel>
+					<p:panel header="帮助与提示">
+						<h:outputText value="亲，请勿经常修改归属方式，经常修改可能造成报表不准确哦～～" />
+						<h:panelGrid columns="2">
+							<h:outputLabel
+								style="color:OrangeRed;text-align:right;font-weight:bold;"
+								value="问：什么叫客户付款前48小时第一个与之沟通的客服？" />
+							<h:outputLabel value="答：指业绩属于客户下单并付款时间点前第一个回复客户的客服。" />
+							<h:outputLabel
+								style="color:OrangeRed;text-align:right;font-weight:bold;"
+								value="问：什么叫客户付款前48小时最后一个与之沟通的客服？" />
+							<h:outputLabel value="答：指业绩属于客户下单并付款时间点前最后一个回复客户的客服。" />
+							<h:outputLabel
+								style="color:OrangeRed;text-align:right;font-weight:bold;"
+								value="问：什么叫客户付款前48小时与之沟通最多的客服？" />
+							<h:outputLabel value="答：指业绩属于客户下单并付款时间点前与客户聊天句数总和最多的客服。" />
+							<h:outputLabel
+								style="color:OrangeRed;text-align:right;font-weight:bold;"
+								value="问：什么叫客户交易创建前48小时第一个与之沟通的客服？" />
+							<h:outputLabel value="答：指业绩属于客户下单的时间点前第一个回复客户的客服。" />
+							<h:outputLabel
+								style="color:OrangeRed;text-align:right;font-weight:bold;"
+								value="问：什么叫客户交易创建前48小时最后一个与之沟通的客服？" />
+							<h:outputLabel value="答：指业绩属于客户下单的时间点前最后一个回复客户的客服。" />
+							<h:outputLabel
+								style="color:OrangeRed;text-align:right;font-weight:bold;"
+								value="问：什么叫客户交易创建前48小时与之沟通最多的客服？" />
+							<h:outputLabel value="答：指业绩属于客户下单的时间点前与客户聊天句数总和最多的客服。" />
+							<h:outputLabel
+								style="color:OrangeRed;text-align:right;font-weight:bold;"
+								value="问：什么叫插旗归属？" />
+							<h:outputLabel value="答：指业绩属于订单所设置的卖家彩旗所对应的客服。" />
+						</h:panelGrid>
+					</p:panel>
+				</h:panelGrid>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

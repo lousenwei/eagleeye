@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/pages/templates/masterTemplate.xhtml">
+	<ui:define name="content">
+		<h:form>
+			<p:fieldset legend="查询条件">
+				<h:panelGrid columns="10">
+					<h:outputLabel value="起始时间：" />
+					<p:calendar
+						value="#{statShopAvgWaitTime.queryParametersMo.startTime}"
+						locale="zh_CN" pattern="yyyy-MM-dd" title="起始时间" navigator="true"></p:calendar>
+					<h:outputLabel value="终止时间：" />
+					<p:calendar
+						value="#{statShopAvgWaitTime.queryParametersMo.endTime}"
+						locale="zh_CN" pattern="yyyy-MM-dd" title="终止时间" navigator="true"></p:calendar>
+					<p:commandButton value="查询"
+						actionListener="#{statShopAvgWaitTime.loadData}"
+						icon="ui-icon ui-icon-search"
+						update="shopStatChart statShopAvgWaitTimeTable msg">
+					</p:commandButton>
+					<p:commandLink value="查询昨天"
+						actionListener="#{statShopAvgWaitTime.loadData}"
+						update="shopStatChart statShopAvgWaitTimeTable msg">
+						<f:param name="type" value="1" />
+					</p:commandLink>
+					<p:commandLink value="查询上周"
+						actionListener="#{statShopAvgWaitTime.loadData}"
+						update="shopStatChart statShopAvgWaitTimeTable msg">
+						<f:param name="type" value="2" />
+					</p:commandLink>
+					<p:commandLink value="查询上月"
+						actionListener="#{statShopAvgWaitTime.loadData}"
+						update="shopStatChart statShopAvgWaitTimeTable msg">
+						<f:param name="type" value="3" />
+					</p:commandLink>
+					<h:outputText value="亲，别忘了点击[查询]哦！"
+						style="color:OrangeRed;font-weight:bold;" />
+					<p:messages id="msg" showDetail="true" />
+				</h:panelGrid>
+			</p:fieldset>
+			<p:separator />
+			<p:accordionPanel id="shopStatChart">
+				<p:tab title="亲，点击可收放哦">
+					<div>
+						<p:lineChart title="店铺客户平均等待时间图表"
+							value="#{statShopAvgWaitTime.shopStatChartModel}"
+							legendPosition="ne" minY="0"></p:lineChart>
+					</div>
+				</p:tab>
+			</p:accordionPanel>
+			<p:separator />
+			<div>
+				<p:dataTable border="1" id="statShopAvgWaitTimeTable"
+					value="#{statShopAvgWaitTime.statAvgWaitTimeResultMo.avgWaitTimeMoList}"
+					var="avgWaitTimeItem">
+					<f:facet name="header">  
+           			 店铺客户平均等待时间表格
+           			 <h:commandLink title="导出EXCEL" style="text-align:right;">
+							<p:graphicImage value="../img/excel.png" />
+							<h:outputLabel value="导出EXCEL"
+								style="color:OrangeRed;font-weight:bold;" />
+							<p:dataExporter type="xls" target="statShopAvgWaitTimeTable"
+								fileName="export"
+								postProcessor="#{statShopAvgWaitTime.postProcessXLS}" />
+						</h:commandLink>
+					</f:facet>
+					<p:columnGroup type="header">
+						<p:row>
+							<p:column rowspan="1" headerText="日期"
+								sortBy="#{avgWaitTimeItem.statDate}" />
+							<p:column rowspan="1" headerText="店主ID" />
+							<p:column colspan="1" headerText="客户平均等待时间（秒）" />
+						</p:row>
+					</p:columnGroup>
+					<p:column id="statDate">
+						<h:outputText value="#{avgWaitTimeItem.statDate}" title="统计日期">
+						</h:outputText>
+					</p:column>
+					<p:column id="staffId">
+						<h:outputText value="#{avgWaitTimeItem.managerId}"></h:outputText>
+					</p:column>
+					<p:column id="totalAmount">
+						<h:outputText value="#{avgWaitTimeItem.avgWaitTime}"
+							title="表示客户询单至店铺内客服首次回复的平均时间间隔"></h:outputText>
+					</p:column>
+					<p:columnGroup type="footer">
+						<p:row>
+							<p:column colspan="2" footerText="店铺客户平均等待时间（秒）:"
+								style="text-align:right" />
+							<p:column
+								footerText="#{statShopAvgWaitTime.statAvgWaitTimeResultMo.avgShopWaitTime}" />
+						</p:row>
+					</p:columnGroup>
+				</p:dataTable>
+			</div>
+			<p:separator />
+			<p:panel header="帮助与提示">
+				<h:panelGrid columns="2">
+					<h:outputLabel
+						style="color:OrangeRed;text-align:right;font-weight:bold;"
+						value="问：什么叫店铺客户平均等待时间？" />
+					<h:outputLabel value="答：表示店铺内所有客服对于客户询单至其首次回复的平均时间间隔。" />
+				</h:panelGrid>
+			</p:panel>
+			<p:ajaxStatus
+				style="position:absolute;width:61px;height:59px;z-index:20;left:400px;top:200px">
+				<f:facet name="start">
+					<h:graphicImage width="199" height="64"
+						value="../img/ajax_loader.gif" />
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

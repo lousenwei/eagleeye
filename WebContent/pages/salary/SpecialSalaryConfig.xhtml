@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/pages/templates/masterTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="specialSalaryForm">
+			<p:growl id="growl" showDetail="true" />
+			<p:panel header="亲，输入模板名称，点击【新建】按钮就可以添加哦">
+				<h:messages errorClass="error" />
+				<h:panelGrid columns="4">
+					<h:outputText value="模板名称" />
+					<p:inputText value="#{salarySpecialConfig.templateName}" />
+					<p:commandButton
+						actionListener="#{salarySpecialConfig.addSalaryConfig}"
+						update=":specialSalaryForm:detailDlg" value="新建"
+						disabled="#{naviBean.modifyLock}" oncomplete="detailDialog.show()"
+						icon="ui-icon ui-icon-pencil" title="View">
+					</p:commandButton>
+				</h:panelGrid>
+			</p:panel>
+			<p:separator />
+			<p:panel header="已添加个性化工资模版列表">
+				<p:dataTable id="staffsTable"
+					value="#{salarySpecialConfig.salaryConfigs}" var="config">
+					<p:column headerText="模板名称">
+						<h:outputLabel value="#{config.id.templateName}" />
+					</p:column>
+					<p:column headerText="结算方式">
+						<h:selectOneMenu value="#{config.settlementType}" disabled="true">
+							<f:selectItem itemLabel="按金额结算" itemValue="1" />
+							<f:selectItem itemLabel="按件数结算" itemValue="2" />
+						</h:selectOneMenu>
+					</p:column>
+					<p:column headerText="基本工资（元）">
+						<h:outputLabel value="#{config.baseSalary}" />
+					</p:column>
+
+					<p:column headerText="修改及删除">
+						<p:commandButton update=":specialSalaryForm:detailDlg"
+							oncomplete="detailDialog.show()" value="修改"
+							disabled="#{naviBean.modifyLock}" icon="ui-icon ui-icon-pencil"
+							title="View">
+							<f:setPropertyActionListener value="#{config}"
+								target="#{salarySpecialConfig.selectedSalaryConfig}" />
+						</p:commandButton>
+
+						<p:commandButton oncomplete="confirmation.show()" title="Delete"
+							disabled="#{naviBean.modifyLock}" value="删除"
+							icon="ui-icon ui-icon-close">
+							<f:setPropertyActionListener value="#{config}"
+								target="#{salarySpecialConfig.selectedSalaryConfig}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+			<p:separator />
+			<p:panel header="帮助与提示">
+
+				<h:outputLabel value="帮助：设置完工资模板后，需要把客服指定到对应的模板哦～"
+					style="color:OrangeRed;font-weight:bold;">
+				</h:outputLabel>
+				<a href="/eagle/pages/salary/SalaryConfigOwner.xhtml">点此快速指定</a>
+
+			</p:panel>
+
+			<p:dialog
+				header="客服#{salarySpecialConfig.selectedSalaryConfig.id.templateName}的工资模版"
+				widgetVar="detailDialog" resizable="false" id="detailDlg"
+				showEffect="fade" hideEffect="explode" width="650">
+				<p:fieldset legend="个性化工资模版设置">
+					<h:panelGrid columns="3">
+						<h:outputLabel value="模板名称：" />
+						<h:outputLabel
+							value="#{salarySpecialConfig.selectedSalaryConfig.id.templateName}"
+							style="color:OrangeRed;font-weight:bold;" />
+						<br />
+
+						<h:outputLabel value="基本工资（元）：" />
+						<h:inputText
+							value="#{salarySpecialConfig.selectedSalaryConfig.baseSalary}" />
+						<h:outputLabel value="" />
+
+						<h:outputLabel value="结算方式：" />
+						<p:selectOneRadio
+							value="#{salarySpecialConfig.selectedSalaryConfig.settlementType}">
+							<f:selectItem itemLabel="按金额结算" itemValue="1" />
+							<f:selectItem itemLabel="按件数结算" itemValue="2" />
+						</p:selectOneRadio>
+						<h:outputLabel value="可选择结算方式按金额结算和按件数结算" style="color:Tomato;" />
+					</h:panelGrid>
+				</p:fieldset>
+				<p:tabView>
+					<p:tab title="按金额结算相关设置">
+						<h:panelGrid columns="3">
+							<h:outputLabel value="业绩指标（元）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.achievementAmountTarget}" />
+							<h:outputLabel value="如果选择按金额结算，请设置基础业绩指标，此为基础提成基线"
+								style="color:Tomato;" />
+
+							<h:outputLabel value="基础提成比例（%）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.amountBaseRate}" />
+							<h:outputLabel value="按金额结算所用，此为基线以下部分（包括基线）的基础提成比率，请输入0-100"
+								style="color:Tomato;" />
+
+							<h:outputLabel value="超额提成比例（%）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.amountExtraRate}" />
+							<h:outputLabel value="按金额结算所用，此为基线以上部分（不包括基线）的额外提成比率，请输入0-100"
+								style="color:Tomato;" />
+
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="按件数结算相关设置">
+
+						<h:panelGrid columns="3">
+							<h:outputLabel value="业绩指标（件）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.achievementNumTarget}" />
+							<h:outputLabel value="如果选择按件数结算，请设置基础业绩指标，此为基础提成基线"
+								style="color:Tomato;" />
+
+							<h:outputLabel value="基础提成金额（元/件）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.numBaseRate}" />
+							<h:outputLabel value="按金额结算所用，此为基线以下部分（包括基线）的基础提成"
+								style="color:Tomato;" />
+
+							<h:outputLabel value="超额提成金额（元/件）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.numExtraRate}" />
+							<h:outputLabel value="按金额结算所用，此为基线以上部分（不包括基线）的额外提成"
+								style="color:Tomato;" />
+
+						</h:panelGrid>
+
+					</p:tab>
+				</p:tabView>
+				<p:tabView>
+					<p:tab title="激励制度设置">
+						<h:panelGrid columns="3">
+							<h:outputLabel value="销售冠军奖（元）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.topSaleAmountPlus}" />
+							<h:outputLabel value="销售金额最多的客服奖励金额" style="color:Tomato;" />
+
+							<h:outputLabel value="零退款奖（元）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.zeroRefundPlus}" />
+							<h:outputLabel value="客服所属业绩没有退款者的奖励金额" style="color:Tomato;" />
+
+							<h:outputLabel value="平均回复最快奖（元）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.topAvgReplyPlus}" />
+							<h:outputLabel value="客服平均回复客户时间最短的奖励金额" style="color:Tomato;" />
+
+							<h:outputLabel value="客户接待最多奖（元）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.topTotalReplyPlus}" />
+							<h:outputLabel value="客服接待客户最多者的奖励金额" style="color:Tomato;" />
+
+							<h:outputLabel value="转换率最高奖（元）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.topExchangeRatePlus}" />
+							<h:outputLabel value="客服所接待客户与下单客户之间的比率最高者的奖励金额"
+								style="color:Tomato;" />
+
+							<h:outputLabel value="客单价最高奖（元）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.topManBuyPlus}" />
+							<h:outputLabel value="客服所属下单客户的单价最高者的奖励金额" style="color:Tomato;" />
+
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="惩罚制度设置">
+						<h:panelGrid columns="3">
+							<h:outputLabel value="销售垫底惩罚（元）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.lastSaleAmountSubtract}" />
+							<h:outputLabel value="销售金额最少的客服惩罚金额" style="color:Tomato;" />
+
+							<h:outputLabel value="最多退款惩罚（元）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.topRefundAmountSubtract}" />
+							<h:outputLabel value="客服所属业绩退款最多者的惩罚金额" style="color:Tomato;" />
+
+							<h:outputLabel value="平均回复最慢惩罚（元）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.lastAvgReplySubtract}" />
+							<h:outputLabel value="客服平均回复客户时间最慢的惩罚金额" style="color:Tomato;" />
+
+							<h:outputLabel value="客户接待最少惩罚（元）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.lastTotalReplySubtract}" />
+							<h:outputLabel value="客服接待客户最少者的惩罚金额" style="color:Tomato;" />
+
+							<h:outputLabel value="转换率最低惩罚（元）：" />
+							<h:inputText
+								value="#{salarySpecialConfig.selectedSalaryConfig.lastExchangeRateSubtract}" />
+							<h:outputLabel value="客服所接待客户与下单客户之间的比率最低者的惩罚金额"
+								style="color:Tomato;" />
+						</h:panelGrid>
+					</p:tab>
+				</p:tabView>
+				<div align="center">
+					<p:commandButton value="保存" oncomplete="detailDialog.hide"
+						actionListener="#{salarySpecialConfig.saveSalaryConfig}"
+						update=":specialSalaryForm:staffsTable growl" />
+					&nbsp;
+					<p:commandButton value="关闭" onclick="detailDialog.hide()"
+						type="button" />
+				</div>
+			</p:dialog>
+			<p:dialog header="确认框" widgetVar="confirmation" height="100">
+				<br />
+				<h:outputText value="是否确认删除 ？" />
+				<br />
+				<br />
+				<p:commandButton value="是"
+					update=":specialSalaryForm:staffsTable growl"
+					oncomplete="confirmation.hide()"
+					actionListener="#{salarySpecialConfig.deleteSalaryConfig}" />
+				<p:commandButton value="否" onclick="confirmation.hide()"
+					type="button" />
+			</p:dialog>
+			<p:ajaxStatus
+				style="position:absolute;width:61px;height:59px;z-index:20;left:400px;top:200px">
+				<f:facet name="start">
+					<h:graphicImage width="199" height="64"
+						value="../img/ajax_loader.gif" />
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+
+	<import resource="classpath:/configs/applicationContext-pub.xml" />
+
+	<!-- user related -->
+	<import resource="classpath:/configs/applicationContext-user.xml" />
+	<!-- eservice related -->
+	<import resource="classpath:/configs/applicationContext-eservice.xml" />
+	<!-- statistcs related -->
+	<import resource="classpath:/configs/applicationContext-statistic.xml" />
+	<!-- salary related -->
+	<import resource="classpath:/configs/applicationContext-salary.xml" />
+	<!-- schedule related -->
+	<import resource="classpath:/configs/applicationContext-update.xml" />
+
+	<import resource="classpath:/configs/applicationContext-schedule.xml" />
+
+	<import resource="classpath:/configs/applicationContext-nopayclean.xml" />
+	
+	<import resource="classpath:/configs/applicationContext-post.xml" />
+	<!-- <bean id="testBsh" class="com.eagleeye.test.TestBsh" parent="baseDao"> 
+		</bean> -->
+</beans>

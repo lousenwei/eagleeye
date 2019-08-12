@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/pages/templates/masterTemplate.xhtml">
+	<ui:define name="content">
+		<h:form>
+			<p:fieldset legend="查询条件">
+				<h:panelGrid columns="12">
+					<h:outputLabel value="起始时间：" />
+					<p:calendar
+						value="#{statStaffAchNumDtl.queryParametersMo.startTime}"
+						locale="zh_CN" pattern="yyyy-MM-dd" title="起始时间" navigator="true"></p:calendar>
+					<h:outputLabel value="终止时间：" />
+					<p:calendar value="#{statStaffAchNumDtl.queryParametersMo.endTime}"
+						locale="zh_CN" pattern="yyyy-MM-dd" title="终止时间" navigator="true"></p:calendar>
+					<h:outputLabel value="客服ID" />
+					<h:selectOneMenu
+						value="#{statStaffAchNumDtl.queryParametersMo.staffId}">
+						<f:selectItems value="#{statStaffAvgWaitTimeDtl.members}"
+							var="member" itemLabel="#{member.id.serviceStaffId}"
+							itemValue="#{member.id.serviceStaffId}" />
+					</h:selectOneMenu>
+					<p:commandButton value="查询"
+						actionListener="#{statStaffAchNumDtl.loadData}"
+						icon="ui-icon ui-icon-search"
+						update="staffStatChart statAchievementTable msg">
+					</p:commandButton>
+					<p:commandLink value="查询昨天"
+						actionListener="#{statStaffAchNumDtl.loadData}"
+						update="staffStatChart statAchievementTable msg">
+						<f:param name="type" value="1" />
+					</p:commandLink>
+					<p:commandLink value="查询上周"
+						actionListener="#{statStaffAchNumDtl.loadData}"
+						update="staffStatChart statAchievementTable msg">
+						<f:param name="type" value="2" />
+					</p:commandLink>
+					<p:commandLink value="查询上月"
+						actionListener="#{statStaffAchNumDtl.loadData}"
+						update="staffStatChart statAchievementTable msg">
+						<f:param name="type" value="3" />
+					</p:commandLink>
+					<h:outputText value="亲，别忘了点击[查询]哦！"
+						style="color:OrangeRed;font-weight:bold;" />
+					<p:messages id="msg" showDetail="true" />
+				</h:panelGrid>
+			</p:fieldset>
+			<p:separator />
+			<p:accordionPanel id="staffStatChart">
+				<p:tab title="亲，点击可收放哦">
+					<div id="chartarea">
+						<p:lineChart title="总店铺业绩图表"
+							value="#{statStaffAchNumDtl.statChartModel}" legendPosition="ne"
+							minY="0" />
+					</div>
+				</p:tab>
+			</p:accordionPanel>
+			<p:separator />
+			<div>
+				<p:dataTable border="1" id="statAchievementTable"
+					value="#{statStaffAchNumDtl.statStaffDtlList}"
+					var="statAchievementItem">
+					<f:facet name="header">  
+           			 客服销售件数表格
+           			  <h:commandLink title="导出EXCEL" style="text-align:right;">
+							<p:graphicImage value="../img/excel.png" />
+							<h:outputLabel value="导出EXCEL"
+								style="color:OrangeRed;font-weight:bold;" />
+							<p:dataExporter type="xls" target="statAchievementTable"
+								fileName="export"
+								postProcessor="#{statStaffAchNumDtl.postProcessXLS}" />
+						</h:commandLink>
+					</f:facet>
+					<p:columnGroup type="header">
+						<p:row>
+							<p:column rowspan="2" headerText="客服ID" />
+							<p:column rowspan="2" headerText="日期"
+								sortBy="#{statAchievementItem.id.statDate}" />
+							<p:column colspan="8" headerText="业绩指标（件）" />
+						</p:row>
+						<p:row>
+							<p:column headerText="等待发货"
+								sortBy="#{statAchievementItem.numWaitSend}" />
+							<p:column headerText="等待确认"
+								sortBy="#{statAchievementItem.numWaitConfirm}" />
+							<p:column headerText="交易完成"
+								sortBy="#{statAchievementItem.numSuccess}" />
+							<p:column headerText="退款中"
+								sortBy="#{statAchievementItem.numRefunding}" />
+							<p:column headerText="全额退款"
+								sortBy="#{statAchievementItem.numAllRefund}" />
+							<p:column headerText="部分退款"
+								sortBy="#{statAchievementItem.numPartRefund}" />
+							<p:column headerText="实际数量"
+								sortBy="#{statAchievementItem.totalNumNoRefund}" />
+							<p:column headerText="所有数量(含退款)"
+								sortBy="#{statAchievementItem.totalNumHasRefund}" />
+						</p:row>
+					</p:columnGroup>
+					<p:column id="staffId">
+						<h:outputText value="#{statAchievementItem.id.staffId}"></h:outputText>
+					</p:column>
+					<p:column id="statDate">
+						<h:outputText value="#{statAchievementItem.id.statDate}"
+							title="统计日期">
+						</h:outputText>
+					</p:column>
+					<p:column id="waitSend">
+						<h:outputText value="#{statAchievementItem.numWaitSend}"
+							title="表示顾客已付款，等待掌柜还未发货的金额"></h:outputText>
+					</p:column>
+					<p:column id="waitConfirm">
+						<h:outputText value="#{statAchievementItem.numWaitConfirm}"
+							title="表示掌柜已发货，等待顾客收货并确认的金额"></h:outputText>
+					</p:column>
+					<p:column id="success">
+						<h:outputText value="#{statAchievementItem.numSuccess}"
+							title="表示顾客已收货并确认的金额，已剔除部分退款额的实收部分"></h:outputText>
+					</p:column>
+					<p:column id="refunding">
+						<h:outputText value="#{statAchievementItem.numRefunding}"
+							title="表示单笔交易中正在退款处理的金额（统计处理中的退款金额）"></h:outputText>
+					</p:column>
+					<p:column id="allRefund">
+						<h:outputText value="#{statAchievementItem.numAllRefund}"
+							title="表示顾客已提出并处理成功的全额退款金额（统计处理成功的全额退款金额）"></h:outputText>
+					</p:column>
+					<p:column id="partRefund">
+						<h:outputText value="#{statAchievementItem.numPartRefund}"
+							title="表示单笔交易中部分退款（统计处理成功的部分退款金额）"></h:outputText>
+					</p:column>
+					<p:column id="totalNumNoRefund">
+						<h:outputText value="#{statAchievementItem.totalNumNoRefund}"
+							title="表示当天掌柜实际交易数量(不含退款数量)，实际交易数量=等待发货+等待确认+交易完成"></h:outputText>
+					</p:column>
+					<p:column id="totalNumHasRefund">
+						<h:outputText value="#{statAchievementItem.totalNumHasRefund}"
+							title="表示当天掌柜所有交易数量(包含退款数量)，所有交易数量=等待发货+等待确认+交易完成+退款处理中+全额退款+部分退款"></h:outputText>
+					</p:column>
+					<p:columnGroup type="footer">
+						<p:row>
+							<p:column colspan="2" footerText="总计（件）:"
+								style="text-align:right" />
+							<p:column
+								footerText="#{statStaffAchNumDtl.statStaffTradeNumResultMo.numWaitSend}" />
+							<p:column
+								footerText="#{statStaffAchNumDtl.statStaffTradeNumResultMo.numWaitConfirm}" />
+							<p:column
+								footerText="#{statStaffAchNumDtl.statStaffTradeNumResultMo.numSuccess}" />
+							<p:column
+								footerText="#{statStaffAchNumDtl.statStaffTradeNumResultMo.numRefunding}" />
+							<p:column
+								footerText="#{statStaffAchNumDtl.statStaffTradeNumResultMo.numAllRefund}" />
+							<p:column
+								footerText="#{statStaffAchNumDtl.statStaffTradeNumResultMo.numPartRefund}" />
+							<p:column
+								footerText="#{statStaffAchNumDtl.statStaffTradeNumResultMo.totalNumNoRefund}" />
+							<p:column
+								footerText="#{statStaffAchNumDtl.statStaffTradeNumResultMo.totalNumHasRefund}" />
+						</p:row>
+					</p:columnGroup>
+				</p:dataTable>
+				<p:separator />
+				<p:panel header="帮助与提示">
+					<h:outputLabel value="以下所有金额都已剔除运费"
+						style="color:Tomato;font-weight:bold;" />
+					<h:panelGrid columns="2">
+						<h:outputLabel
+							style="color:OrangeRed;text-align:right;font-weight:bold;"
+							value="问：什么叫等待发货？" />
+						<h:outputLabel value="答：表示顾客已付款，等待掌柜还未发货的数目。" />
+						<h:outputLabel
+							style="color:OrangeRed;text-align:right;font-weight:bold;"
+							value="问：什么叫等待确认？" />
+						<h:outputLabel value="答：表示掌柜已发货，等待顾客收货并确认的数目。" />
+						<h:outputLabel
+							style="color:OrangeRed;text-align:right;font-weight:bold;"
+							value="问：什么叫交易完成？" />
+						<h:outputLabel value="答：表示顾客已收货并确认的数目，已剔除部分退款额的实收部分。" />
+						<h:outputLabel
+							style="color:OrangeRed;text-align:right;font-weight:bold;"
+							value="问：什么叫退款处理中？" />
+						<h:outputLabel value="答：表示顾客已提出并在处理中的退款数目（统计处理中的退款数目）。" />
+						<h:outputLabel
+							style="color:OrangeRed;text-align:right;font-weight:bold;"
+							value="问：什么叫全额退款？" />
+						<h:outputLabel value="答：表示顾客已提出并处理成功的全额退款数目（统计处理成功的全额退款数目）。" />
+						<h:outputLabel
+							style="color:OrangeRed;text-align:right;font-weight:bold;"
+							value="问：什么叫部分退款？" />
+						<h:outputLabel value="答：表示单笔交易中部分退款（统计处理成功的部分退款数目）。" />
+						<h:outputLabel
+							style="color:OrangeRed;text-align:right;font-weight:bold;"
+							value="问：什么叫实际交易数量(不含退款数量)？" />
+						<h:outputLabel
+							value="答：表示当天掌柜实际交易数量(不含退款数量)，实际交易数量=等待发货+等待确认+交易完成。" />
+						<h:outputLabel
+							style="color:OrangeRed;text-align:right;font-weight:bold;"
+							value="问：什么叫所有交易数量(包含退款数量)？" />
+						<h:outputLabel
+							value="表示当天掌柜所有交易数量(包含退款数量)，所有交易数量=等待发货+等待确认+交易完成+退款中+全额退款+部分退款" />
+					</h:panelGrid>
+				</p:panel>
+			</div>
+			<p:ajaxStatus
+				style="position:absolute;width:61px;height:59px;z-index:20;left:400px;top:200px">
+				<f:facet name="start">
+					<h:graphicImage width="199" height="64"
+						value="../img/ajax_loader.gif" />
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

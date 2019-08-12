@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/pages/templates/masterTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="salaryOwnerForm">
+			<div align="center">
+				<p:panel header="亲，勾选客服，选择相应模板，点击【分配至模板】按钮，即可指定对应模板给客服哦">
+					<p:growl id="growl" showDetail="true" />
+					<h:panelGrid columns="3">
+						<p:dataTable var="noOwner"
+							value="#{salaryConfigOwner.noSalaryConfigOwners}"
+							paginator="true" rowKey="#{noOwner.rowKey}" rows="10"
+							selection="#{salaryConfigOwner.selectOwners}" id="noOwnerTable"
+							tableStyle="height:10cm;">
+							<f:facet name="header">  
+            		待指定工资模板的客服列表
+        			</f:facet>
+							<p:column selectionMode="multiple" />
+							<p:column headerText="客服Id">  
+          			#{noOwner.staffId}  
+       				</p:column>
+						</p:dataTable>
+
+
+						<p:panel>
+							<h:outputLabel value="模板名称：" />
+							<h:selectOneMenu value="#{salaryConfigOwner.selectSalaryConfig}">
+								<f:selectItems value="#{salaryConfigOwner.salaryConfigs}"
+									var="salaryConfig" itemLabel="#{salaryConfig.id.templateName}"
+									itemValue="#{salaryConfig.id.templateName}" />
+							</h:selectOneMenu>
+							<p:commandButton value="分配至模板"
+								disabled="#{naviBean.modifyLock}"
+								actionListener="#{salaryConfigOwner.assignStaffs}"
+								update=":salaryOwnerForm:noOwnerTable :salaryOwnerForm:existPanel growl" />
+						</p:panel>
+
+						<p:panel header="已添加个性化工资模版列表" id="existPanel">
+							<p:dataList var="config"
+								value="#{salaryConfigOwner.salaryConfigMos}">
+								<p:column>
+									<p:panel header="模板名称：#{config.templateName}">
+										<p:dataTable value="#{config.salaryConfigOwners}" var="owner">
+											<p:column headerText="已添加个性化工资模板客服ID">
+												<h:outputLabel value="#{owner}" />
+											</p:column>
+
+											<p:column headerText="删除">
+												<p:commandButton oncomplete="confirmation.show()"
+													disabled="#{naviBean.modifyLock}" title="Delete"
+													value="删除" icon="ui-icon ui-icon-close">
+													<f:setPropertyActionListener value="#{owner}"
+														target="#{salaryConfigOwner.selectOwner}" />
+												</p:commandButton>
+											</p:column>
+										</p:dataTable>
+									</p:panel>
+									<p:separator style="background-color:OrangeRed;" />
+								</p:column>
+							</p:dataList>
+						</p:panel>
+
+					</h:panelGrid>
+				</p:panel>
+				<p:dialog header="确认框" widgetVar="confirmation" height="100">
+					<br />
+					<h:outputText value="是否确认删除 ？" />
+					<br />
+					<br />
+					<p:commandButton value="是"
+						update=":salaryOwnerForm:noOwnerTable :salaryOwnerForm:existPanel growl"
+						oncomplete="confirmation.hide()"
+						actionListener="#{salaryConfigOwner.deleteSalaryConfigOwner}" />
+					<p:commandButton value="否" onclick="confirmation.hide()"
+						type="button" />
+				</p:dialog>
+			</div>
+			<p:separator />
+			<p:panel header="帮助与提示">
+				<p:lightBox>
+					<h:outputLink value="#" title="点此查看图文帮助">
+						<h:outputText style="color:OrangeRed;"
+							value="帮助：勾选客服，选择模板，点击【分配至模板】按钮， 点此查看图文帮助!" />
+					</h:outputLink>
+					<f:facet name="inline">
+						<h:graphicImage value="/pages/img/helpsalaryowner.jpg"
+							style=" width : 730px;" />
+					</f:facet>
+				</p:lightBox>
+				<h:panelGrid columns="2">
+					<h:outputLabel
+						style="color:OrangeRed;text-align:right;font-weight:bold;"
+						value="问：什么叫待指定工资模板的客服？" />
+					<h:outputLabel value="答：待指定工资模板的客服是指尚未指定其工资模板的客服，计算工资时系统会使用通用模版。" />
+				</h:panelGrid>
+			</p:panel>
+			<p:ajaxStatus
+				style="position:absolute;width:61px;height:59px;z-index:20;left:400px;top:200px">
+				<f:facet name="start">
+					<h:graphicImage width="199" height="64"
+						value="../img/ajax_loader.gif" />
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

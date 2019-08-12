@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/pages/templates/masterTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="historySalaryForm">
+			<p:fieldset legend="查询条件">
+				<p:messages id="msg" showDetail="true" />
+				<h:panelGrid columns="7">
+					<h:outputLabel value="已结算历史包含此日期：" />
+					<p:calendar required="true" requiredMessage="请输入日期"
+						value="#{salarySettlement.salarySettlementQueryMo.betweenDate}"
+						id="start" locale="zh_CN" pattern="yyyy-MM-dd" title="起始时间"
+						navigator="true" />
+					<p:commandButton id="cal" value="查询"
+						actionListener="#{salarySettlement.getSalarySettlementsHistory}"
+						update="salaryhistory msg">
+					</p:commandButton>
+				</h:panelGrid>
+			</p:fieldset>
+			<p:separator />
+			<p:dataTable border="1" id="salaryhistory"
+				value="#{salarySettlement.salarySettlementHistory}" var="salaryItem"
+				style="margin-right:10px;">
+				<f:facet name="header">  
+           			 此时间段内已结算客服工资表格
+       	 			</f:facet>
+				<p:columnGroup type="header">
+					<p:row>
+						<p:column rowspan="2" headerText="客服ID" />
+						<p:column rowspan="2" headerText="结算周期" />
+						<p:column colspan="10" headerText="工资组成（元）" />
+					</p:row>
+					<p:row>
+						<p:column headerText="结算方式" />
+						<p:column headerText="基础工资" />
+						<p:column headerText="基线下提成" />
+						<p:column headerText="基线上提成" />
+						<p:column headerText="奖励制度" />
+						<p:column headerText="惩罚制度" />
+						<p:column headerText="调整金额" />
+						<p:column headerText="最终工资" />
+						<p:column headerText="结算时间" />
+						<p:column headerText="查看" />
+					</p:row>
+				</p:columnGroup>
+				<p:column id="staffId">
+					<h:outputText value="#{salaryItem.id.staffId}"></h:outputText>
+				</p:column>
+				<p:column id="period">
+					<h:outputLabel value="#{salaryItem.id.start}">
+						<f:convertDateTime type="date" timeZone="GMT+8" locale="cn"
+							pattern="yyyy-MM-dd" />
+					</h:outputLabel>至
+					<h:outputLabel value="#{salaryItem.id.end}">
+						<f:convertDateTime type="date" timeZone="GMT+8" locale="cn"
+							pattern="yyyy-MM-dd" />
+					</h:outputLabel>
+				</p:column>
+				<p:column>
+					<p:selectOneMenu value="#{salaryItem.settlementType}"
+						disabled="true">
+						<f:selectItem itemLabel="按金额结算" itemValue="1" />
+						<f:selectItem itemLabel="按件数结算" itemValue="2" />
+					</p:selectOneMenu>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{salaryItem.baseSalary}"></h:outputText>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{salaryItem.baseRateResult}"></h:outputText>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{salaryItem.extraRateResult}"></h:outputText>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{salaryItem.plusAmountResult}"></h:outputText>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{salaryItem.subtractAmountResult}"></h:outputText>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{salaryItem.adjustAmount}"></h:outputText>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{salaryItem.finalSalaryResult}"></h:outputText>
+				</p:column>
+				<p:column>
+					<h:outputLabel value="#{salaryItem.settlementDate}" />
+				</p:column>
+				<p:column>
+					<p:commandButton update=":historySalaryForm:detailDlg"
+						oncomplete="detailDialog.show()" icon="ui-icon ui-icon-search"
+						title="View">
+						<f:setPropertyActionListener value="#{salaryItem}"
+							target="#{salarySettlement.selectedStaff}" />
+					</p:commandButton>
+				</p:column>
+				<f:facet name="footer">  
+           			 已结算工资列表
+       	 			</f:facet>
+			</p:dataTable>
+
+			<p:dialog
+				header="客服#{salarySettlement.selectedStaff.id.staffId}的工资明细"
+				widgetVar="detailDialog" resizable="false" id="detailDlg"
+				showEffect="fade" hideEffect="explode" width="650">
+				<p:fieldset legend="客服与工资">
+					<h:panelGrid columns="3" style="align:left;">
+						<h:outputLabel value="客服ID：" />
+						<h:outputLabel
+							value="#{salarySettlement.selectedStaff.id.staffId}" />
+						<h:outputLabel value="" />
+
+						<h:outputLabel value="结算周期：" />
+						<h:outputLabel
+							value="#{salarySettlement.selectedStaff.id.start}    至" />
+						<h:outputLabel value="#{salarySettlement.selectedStaff.id.end}" />
+
+						<h:outputLabel value="工资总计：" />
+						<h:outputLabel id="finalamount"
+							style="color:Tomato;font-size:large;font-weight:bold;"
+							value="#{salarySettlement.selectedStaff.finalSalaryResult}元" />
+						<br />
+						<h:outputLabel value="手工调整：" />
+						<h:outputLabel
+							style="color:Tomato;font-size:large;font-weight:bold;"
+							value="#{salarySettlement.selectedStaff.adjustAmount}元" />
+					</h:panelGrid>
+				</p:fieldset>
+				<p:fieldset legend="基本工资">
+					<h:panelGrid columns="3" style="align:left;">
+						<h:outputLabel value="基本工资：" />
+						<h:outputLabel
+							value="#{salarySettlement.selectedStaff.baseSalary}元" />
+						<h:outputLabel value="" />
+
+						<h:outputLabel value="结算方式：" />
+						<p:selectOneRadio
+							value="#{salarySettlement.selectedStaff.settlementType}"
+							disabled="true">
+							<f:selectItem itemLabel="按金额结算" itemValue="1" />
+							<f:selectItem itemLabel="按件数结算" itemValue="2" />
+						</p:selectOneRadio>
+						<h:outputLabel value="结算方式按金额结算和按件数结算" />
+					</h:panelGrid>
+				</p:fieldset>
+				<p:fieldset legend="按金额结算相关设置">
+					<h:panelGrid columns="3" style="align:left;">
+						<h:outputLabel value="是否完成指标：" />
+						<p:selectOneRadio
+							value="#{salarySettlement.selectedStaff.achieveTarget}"
+							disabled="true">
+							<f:selectItem itemLabel="是" itemValue="true" />
+							<f:selectItem itemLabel="否" itemValue="false" />
+						</p:selectOneRadio>
+
+						<h:outputLabel value="客服业绩是否超过既定的按金额或按件计算的基线" />
+
+						<h:outputLabel value="基础提成（元）：" />
+						<h:inputText disabled="true"
+							value="#{salarySettlement.selectedStaff.baseRateResult}" />
+						<h:outputLabel value="基线以下部分（包括基线）的基础提成" />
+
+						<h:outputLabel value="超额提成（元）：" />
+						<h:inputText disabled="true"
+							value="#{salarySettlement.selectedStaff.extraRateResult}" />
+						<h:outputLabel value="基线以上部分（不包括基线）的额外提成" />
+					</h:panelGrid>
+				</p:fieldset>
+				<p:tabView>
+					<p:tab title="激励制度设置">
+						<h:panelGrid columns="3" style="align:left;">
+							<h:outputLabel value="销售冠军奖（元）：" />
+							<h:inputText disabled="true"
+								value="#{salarySettlement.selectedStaff.topSaleAmountPlusResult}" />
+							<h:outputLabel value="销售金额最多的客服奖励金额" />
+
+							<h:outputLabel value="零退款奖（元）：" />
+							<h:inputText disabled="true"
+								value="#{salarySettlement.selectedStaff.zeroRefundPlusResult}" />
+							<h:outputLabel value="客服所属业绩没有退款者的奖励金额" />
+
+							<h:outputLabel value="平均回复最快奖（元）：" />
+							<h:inputText disabled="true"
+								value="#{salarySettlement.selectedStaff.topAvgReplyPlusResult}" />
+							<h:outputLabel value="客服平均回复客户时间最短的奖励金额" />
+
+							<h:outputLabel value="客户接待最多奖（元）：" />
+							<h:inputText disabled="true"
+								value="#{salarySettlement.selectedStaff.topTotalReplyPlusResult}" />
+							<h:outputLabel value="客服接待客户最多者的奖励金额" />
+
+							<h:outputLabel value="转换率最高奖（元）：" />
+							<h:inputText disabled="true"
+								value="#{salarySettlement.selectedStaff.topExchangeRatePlusResult}" />
+							<h:outputLabel value="客服所接待客户与下单客户之间的比率最高者的奖励金额" />
+
+							<h:outputLabel value="客单价最高奖（元）：" />
+							<h:inputText disabled="true"
+								value="#{salarySettlement.selectedStaff.topManBuyPlusResult}" />
+							<h:outputLabel value="客服所属下单客户的单价最高者的奖励金额" />
+
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="惩罚制度设置">
+						<h:panelGrid columns="3" style="align:left;">
+							<h:outputLabel value="销售垫底惩罚（元）：" />
+							<h:inputText disabled="true"
+								value="#{salarySettlement.selectedStaff.lastSaleAmountSubtractResult}" />
+							<h:outputLabel value="销售金额最少的客服惩罚金额" />
+
+							<h:outputLabel value="最多退款惩罚（元）：" />
+							<h:inputText disabled="true"
+								value="#{salarySettlement.selectedStaff.topRefundAmountSubtractResult}" />
+							<h:outputLabel value="客服所属业绩退款最多者的惩罚金额" />
+
+							<h:outputLabel value="平均回复最慢惩罚（元）：" />
+							<h:inputText disabled="true"
+								value="#{salarySettlement.selectedStaff.lastAvgReplySubtractResult}" />
+							<h:outputLabel value="客服平均回复客户时间最慢的惩罚金额" />
+
+							<h:outputLabel value="客户接待最少惩罚（元）：" />
+							<h:inputText disabled="true"
+								value="#{salarySettlement.selectedStaff.lastTotalReplySubtractResult}" />
+							<h:outputLabel value="客服接待客户最少者的惩罚金额" />
+
+							<h:outputLabel value="转换率最低惩罚（元）：" />
+							<h:inputText disabled="true"
+								value="#{salarySettlement.selectedStaff.lastExchangeRateSubtractResult}" />
+							<h:outputLabel value="客服所接待客户与下单客户之间的比率最低者的惩罚金额" />
+						</h:panelGrid>
+					</p:tab>
+				</p:tabView>
+				<div align="center">
+					<p:commandButton value="关闭" onclick="detailDialog.hide()"
+						type="button" />
+					&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+					<p:commandButton value="打印" type="button">
+						<p:printer target="detailDlg" />
+					</p:commandButton>
+				</div>
+			</p:dialog>
+			<p:ajaxStatus
+				style="position:absolute;width:61px;height:59px;z-index:20;left:400px;top:200px">
+				<f:facet name="start">
+					<h:graphicImage width="199" height="64"
+						value="../img/ajax_loader.gif" />
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+			<p:growl id="growl" showDetail="true" />
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,360 @@
+ALTER TABLE `eagleeye`.`manager_info` ADD COLUMN `stat_zero_switch` TINYINT(1) NULL DEFAULT 0 COMMENT '业绩补零开关'  AFTER `modify_psd` ;
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+USE `eagleeye`;
+DROP procedure IF EXISTS `proc_avgWaitTimeStaffDtlByTimePeriod`;
+
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_avgWaitTimeStaffDtlByTimePeriod`(
+
+in SellerNick VARCHAR(100),
+
+in StartDate Date,
+
+in EndDate Date,
+
+in StaffId VARCHAR(100)
+
+)
+BEGIN
+
+SELECT service_staff_id,waiting_date,avg_waiting_times FROM waiting_times_on_day t
+
+FORCE INDEX ( waiting_time_on_day_index )
+
+where t.manager_id=SellerNick
+
+and t.service_staff_id=StaffId
+
+and (t.waiting_date between StartDate and EndDate)
+
+order by waiting_date;
+
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+USE `eagleeye`;
+DROP procedure IF EXISTS `proc_exchangeRateStaffDtlByTimePreiod`;
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_exchangeRateStaffDtlByTimePreiod`(
+
+in SellerNick VARCHAR(100),
+
+in StartDate Date,
+
+in EndDate Date,
+
+in StaffId VARCHAR(100)
+
+)
+BEGIN
+
+select k.service_staff_id,k1.pay_num,k.reply_num,k.reply_date from
+
+(select reply_num,t.service_staff_id,reply_date from reply_stat_on_day t 
+
+where (t.reply_date between StartDate and EndDate)
+
+and t.manager_id=SellerNick 
+
+and t.service_staff_id=StaffId) k
+
+left join
+
+(select count(1) pay_num,e.trade_owner,e.pay_time from (
+
+select distinct buyer_nick,pay_time,trade_owner
+
+from trade t 
+
+where t.seller_nick=SellerNick and t.trade_status
+
+IN ('TRADE_BUYER_SIGNED','WAIT_SELLER_SEND_GOODS', 'WAIT_BUYER_CONFIRM_GOODS', 'TRADE_FINISHED','TRADE_CLOSED')
+
+and (t.pay_time between StartDate  and EndDate)
+
+and trade_owner=StaffId) e
+
+GROUP BY e.pay_time) k1
+
+on k.service_staff_id= k1.trade_owner and k.reply_date=k1.pay_time
+
+order by reply_date;
+
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+USE `eagleeye`;
+DROP procedure IF EXISTS `proc_manBuyStaffDtlByTimePreiod`;
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_manBuyStaffDtlByTimePreiod`(
+
+in SellerNick VARCHAR(100),
+
+in StartDate Date,
+
+in EndDate Date,
+
+in StaffId VARCHAR(100)
+
+)
+BEGIN
+
+select trade_owner,pay_time,sum(t.payment) payment,count(1) num
+
+from trade t 
+
+where t.seller_nick=SellerNick and t.trade_status
+
+IN ('TRADE_BUYER_SIGNED','WAIT_SELLER_SEND_GOODS', 'WAIT_BUYER_CONFIRM_GOODS', 'TRADE_FINISHED')
+
+and (t.pay_time between StartDate and EndDate)
+
+and trade_owner = StaffId
+
+GROUP BY seller_nick, trade_owner, pay_time
+
+ORDER BY pay_time;
+
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+USE `eagleeye`;
+DROP procedure IF EXISTS `proc_onlineTimeStaffDtlByTimePeriod`;
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_onlineTimeStaffDtlByTimePeriod`(
+in SellerNick VARCHAR(100),
+in StartDate Date,
+in EndDate Date,
+in StaffId VARCHAR(100)
+)
+BEGIN
+SELECT service_staff_id,online_date,online_times FROM online_times_on_day t
+where t.manager_id=SellerNick
+and (t.online_date between StartDate and EndDate)
+and service_staff_id=StaffId
+order by online_date;
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+USE `eagleeye`;
+DROP procedure IF EXISTS `proc_refundRateStaffDtlByTimePreiod`;
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_refundRateStaffDtlByTimePreiod`(
+in SellerNick VARCHAR(100),
+in StartDate Date,
+in EndDate Date,
+in StaffId VARCHAR(100)
+)
+BEGIN
+select sum(amount_all_refund+amount_part_refund) refund_amount,sum(total_amount+amount_all_refund+amount_part_refund) overall_amount,stat_date,staff_id
+from stat_achievement
+where manager_id=SellerNick
+and stat_date between StartDate and EndDate
+and is_total=false
+and staff_id=StaffId
+group by stat_date
+order by stat_date;
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+USE `eagleeye`;
+DROP procedure IF EXISTS `proc_workloadStaffDtlByTimePreiod`;
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_workloadStaffDtlByTimePreiod`(
+
+in SellerNick VARCHAR(100),
+
+in StartDate Date,
+
+in EndDate Date,
+
+in StaffId VARCHAR(100)
+
+)
+BEGIN
+SELECT service_staff_id,reply_num,reply_date FROM reply_stat_on_day t
+
+FORCE INDEX ( reply_stat_on_day_index )
+
+where t.manager_id=SellerNick
+
+and t.service_staff_id=StaffId
+
+and (t.reply_date between StartDate and EndDate)
+
+order by reply_date;
+END$$
+
+DELIMITER ;
+
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+USE `eagleeye`;
+DROP procedure IF EXISTS `proc_statStaffSumCalculate`;
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_statStaffSumCalculate`(
+in StaffId Varchar(100),
+in managerId Varchar(100),
+in isTotal Boolean,
+in StartDate Date,
+in EndDate Date
+)
+BEGIN
+select sum(amount_wait_send) sum_wait_send,sum(amount_wait_confirm)sum_wait_confirm,sum(amount_success)sum_success,sum(amount_all_refund)sum_all_refund,sum(amount_part_refund)sum_part_refund,sum(amount_refunding)refunding,sum(post_fee)post_fee,sum(total_amount)sum_total
+from stat_achievement
+where manager_id=managerId
+and is_total=isTotal
+and staff_id=StaffId
+and (stat_date between StartDate and EndDate)
+group by staff_id;
+END$$
+
+DELIMITER ;
+
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+USE `eagleeye`;
+DROP procedure IF EXISTS `proc_statShopSumCalculate`;
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_statShopSumCalculate`(
+in ShopId Varchar(100),
+in managerId Varchar(100),
+in StartDate Date,
+in EndDate Date
+)
+BEGIN
+SELECT stat_date,sum(amount_wait_send) sum_wait_send,sum(amount_wait_confirm) sum_wait_confirm,
+sum(amount_success) sum_success,sum(amount_refunding) sum_refunding,sum(post_fee) sum_post_fee,
+sum(amount_all_refund) sum_all_refund,sum(amount_part_refund) sum_part_refund,sum(total_amount) sum_total
+FROM stat_achievement
+where manager_id=managerId
+and is_total=false
+and shop_id=ShopId
+and (stat_date between StartDate and EndDate)
+group by stat_date;
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+USE `eagleeye`;
+DROP procedure IF EXISTS `proc_statStaffNumSumCalculate`;
+DELIMITER $$
+
+CREATE PROCEDURE `eagleeye`.`proc_statStaffNumSumCalculate` (
+in StaffId Varchar(100),
+in managerId Varchar(100),
+in StartDate Date,
+in EndDate Date
+)
+BEGIN
+select sum(num_wait_send) sum_wait_send,sum(num_wait_confirm)sum_wait_confirm,
+sum(num_success)sum_success,sum(num_all_refund)sum_all_refund,sum(num_part_refund)sum_part_refund,
+sum(num_refunding)sum_refunding,sum(total_num_no_refund)sum_num_no_refund,sum(total_num_has_refund)sum_num_has_refund
+from stat_achievement_num
+where manager_id=managerId
+and is_total=false
+and staff_id= StaffId
+and (stat_date between StartDate and EndDate)
+group by staff_id;
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+USE `eagleeye`;
+DROP procedure IF EXISTS `proc_statShopNumSumCalculate`;
+DELIMITER $$
+
+CREATE PROCEDURE `eagleeye`.`proc_statShopNumSumCalculate` (
+in managerId Varchar(100),
+in StartDate Date,
+in EndDate Date
+)
+BEGIN
+SELECT stat_date,sum(num_wait_send) sum_wait_send,sum(num_wait_confirm) sum_wait_confirm,
+sum(num_success) sum_success,sum(num_refunding) sum_refunding,
+sum(num_all_refund) sum_all_refund,sum(num_part_refund) sum_part_refund,
+sum(total_num_no_refund) sum_total_no_refund,sum(total_num_has_refund) sum_total_has_refund
+FROM stat_achievement_num
+where manager_id=managerId
+and is_total=false
+and (stat_date between StartDate and EndDate)
+group by stat_date;
+END$$
+
+DELIMITER ;
+
+
+USE `eagleeye`;
+DROP procedure IF EXISTS `proc_statShopNumSumAll`;
+
+DELIMITER $$
+USE `eagleeye`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_statShopNumSumAll`(
+in managerId Varchar(100),
+in StartDate Date,
+in EndDate Date
+)
+BEGIN
+SELECT sum(num_wait_send) sum_wait_send,sum(num_wait_confirm) sum_wait_confirm,
+sum(num_success) sum_success,sum(num_refunding) sum_refunding,
+sum(num_all_refund) sum_all_refund,sum(num_part_refund) sum_part_refund,
+sum(total_num_no_refund) sum_total_no_refund,sum(total_num_has_refund) sum_total_has_refund
+FROM stat_achievement_num
+where manager_id=managerId
+and is_total=true
+and (stat_date between StartDate and EndDate);
+END$$
+
+DELIMITER ;
+

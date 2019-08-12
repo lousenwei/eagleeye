@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+	<!-- salary dao -->
+	<bean id="salaryConfigDao" class="com.eagleeye.salary.dao.impl.SalaryConfigDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="salarySettlementDao" class="com.eagleeye.salary.dao.impl.SalarySettlementDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="salaryConfigOwnerDao" class="com.eagleeye.salary.dao.impl.SalaryConfigOwnerDAO"
+		parent="baseDao">
+	</bean>
+	<!-- salary blh -->
+	<bean id="salaryConfigBlh" class="com.eagleeye.salary.blh.impl.SalaryConfigBlhImpl">
+		<property name="salaryConfigDao" ref="salaryConfigDao"></property>
+	</bean>
+	<bean id="salaryCalculateBlh" class="com.eagleeye.salary.blh.impl.SalaryCalculateBlhImpl">
+		<property name="rankStatisticsDao" ref="rankStatisticsDao"></property>
+		<property name="groupMemberDao" ref="groupMemberDao"></property>
+		<property name="salaryConfigDao" ref="salaryConfigDao"></property>
+	</bean>
+	<bean id="salarySettlementBlh" class="com.eagleeye.salary.blh.impl.SalarySettlementBlhImpl">
+		<property name="salarySettlementDao" ref="salarySettlementDao"></property>
+	</bean>
+	<bean id="salaryConfigOwnerBlh" class="com.eagleeye.salary.blh.impl.SalaryConfigOwnerBlhImpl">
+		<property name="salaryConfigOwnerDao" ref="salaryConfigOwnerDao"></property>
+	</bean>
+	<!-- salary bsh -->
+	<bean id="salaryConfigBsh" class="com.eagleeye.salary.bsh.impl.SalaryConfigBshImpl">
+		<property name="salaryConfigBlh" ref="salaryConfigBlh"></property>
+	</bean>
+	<bean id="salaryCalculateBsh" class="com.eagleeye.salary.bsh.impl.SalaryCalculateBshImpl">
+		<property name="salaryCalculateBlh" ref="salaryCalculateBlh"></property>
+	</bean>
+	<bean id="salarySettlementBsh" class="com.eagleeye.salary.bsh.impl.SalarySettlementBshImpl">
+		<property name="salarySettlementBlh" ref="salarySettlementBlh"></property>
+	</bean>
+	<bean id="salaryConfigOwnerBsh" class="com.eagleeye.salary.bsh.impl.SalaryConfigOwnerBshImpl">
+		<property name="salaryConfigBlh" ref="salaryConfigBlh"></property>
+		<property name="salaryConfigOwnerBlh" ref="salaryConfigOwnerBlh"></property>
+	</bean>
+</beans>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-2.0.xsd"
+	default-lazy-init="true">
+
+	<bean id="schedulerBean" class="com.eagleeye.schedule.SchedulerFactory">
+		<property name="jobListeners">
+			<list>
+				<ref bean="commonJobListener" />
+			</list>
+		</property>
+	</bean>
+	<bean id="commonJobListener" name="commonJobListener"
+		class="com.eagleeye.schedule.listener.CommonJobListener" />
+	<!-- ==================================增量导入 schedule begin============================= -->
+	<bean id="scheduleIncrementUpdateControl"
+		class="com.eagleeye.schedule.ScheduleIncrementUpdateControlImpl" />
+	<bean id="scheduleIncrementUpdateJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="scheduleIncrementUpdateControl" /><!-- 方法所在的Bean -->
+		</property>
+		<property name="targetMethod">
+			<value>execute</value><!-- 方法名 -->
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+		<property name="jobListenerNames">
+			<list>
+				<value>commonJobListener</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="IncrementUpdateTrigger.startup" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="scheduleIncrementUpdateJob" />
+		<property name="cronExpression" value="${IncrementUpdateTrigger.cronExpression}" />
+	</bean>
+	<!-- ==================================增量导入 schedule end============================= -->
+	<!-- ==================================全量导入 schedule begin============================= -->
+	<bean id="scheduleTotalUpdateControl" class="com.eagleeye.schedule.ScheduleTotalUpdateControlImpl" />
+	<bean id="scheduleTotalUpdateJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="scheduleTotalUpdateControl" /><!-- 方法所在的Bean -->
+		</property>
+		<property name="targetMethod">
+			<value>execute</value><!-- 方法名 -->
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+		<property name="jobListenerNames">
+			<list>
+				<value>commonJobListener</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="TotalUpdateTrigger.startup" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="scheduleTotalUpdateJob" />
+		<property name="cronExpression" value="${TotalUpdateTrigger.cronExpression}" />
+	</bean>
+	<!-- ==================================全量导入 schedule end============================= -->
+	<!-- ==================================过期识别 schedule begin============================= -->
+	<bean id="scheduleVerifyNoPayCleanControl"
+		class="com.eagleeye.schedule.ScheduleVerifyNoPayCleanControlImpl" />
+	<bean id="scheduleVerifyNoPayCleanJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="scheduleVerifyNoPayCleanControl" /><!-- 方法所在的Bean -->
+		</property>
+		<property name="targetMethod">
+			<value>execute</value><!-- 方法名 -->
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+		<property name="jobListenerNames">
+			<list>
+				<value>commonJobListener</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="VerifyNoPayCleanTrigger.startup" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="scheduleVerifyNoPayCleanJob" />
+		<property name="cronExpression" value="${VerifyNoPayCleanTrigger.cronExpression}" />
+	</bean>
+	<!-- ==================================过期识别 schedule end============================= -->
+	<!-- ==================================过期删除 schedule begin============================= -->
+	<bean id="scheduleDeleteAllNoPayControl" class="com.eagleeye.schedule.ScheduleDeleteAllNoPayControlImpl" />
+	<bean id="scheduleDeleteAllNoPayJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="scheduleDeleteAllNoPayControl" /><!-- 方法所在的Bean -->
+		</property>
+		<property name="targetMethod">
+			<value>execute</value><!-- 方法名 -->
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+		<property name="jobListenerNames">
+			<list>
+				<value>commonJobListener</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="DeleteAllNoPayTrigger.startup" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="scheduleDeleteAllNoPayJob" />
+		<property name="cronExpression" value="${DeleteAllNoPayTrigger.cronExpression}" />
+	</bean>
+	<!-- ==================================过期删除 schedule end============================= -->
+</beans>

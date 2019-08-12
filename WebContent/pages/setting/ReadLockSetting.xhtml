@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/pages/templates/masterTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="ReadLockForm">
+			<p:growl id="messages" showDetail="true" autoUpdate="true" />
+			<p:panel header="设置需要查看密码限制的页面">
+				<p:tree value="#{readLockConfig.root}" var="treeNode"
+					id="readLockConfigTree" selectionMode="checkbox"
+					selection="#{readLockConfig.selectedNodes}">
+					<p:treeNode>
+						<h:outputText value="#{treeNode}" />
+					</p:treeNode>
+				</p:tree>
+				<p:commandButton disabled="#{naviBean.modifyLock}"
+					actionListener="#{readLockConfig.saveSelectedNodes}" value="保存" />
+			</p:panel>
+			<p:separator />
+			<p:panel header="帮助与提示">
+				<h:panelGrid columns="2">
+					<h:outputLabel
+						style="color:OrangeRed;text-align:right;font-weight:bold;"
+						value="问：设置需要查看密码限制的页面后要做什么？" />
+					<h:outputLabel value="答：亲，千万别忘了设置查看密码哦，否则就不起效果了～" />
+				</h:panelGrid>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

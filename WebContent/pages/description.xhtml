@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<ui:include src="/pages/templates/version.xhtml" />
+</h:head>
+
+<h:body>
+	<ui:composition template="/pages/templates/masterTemplate.xhtml">
+		<ui:define name="content">
+			<h:form>
+				<p:panel header="功能菜单介绍">
+					<h:panelGrid columns="1">
+						<p:panel header="店铺绩效模块">
+							<h:panelGrid columns="2">
+								<a href="/eagle/pages/shop/StatAchievement.xhtml"
+									style="color: OrangeRed; font-weight: bold;">店铺经营状况菜单：</a>
+								<h:outputLabel value="此菜单反映店铺经营状况，提供店铺内付款交易、退款、当天盈亏等数据指标。" />
+
+								<a href="/eagle/pages/shop/StatAchievementShopChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">店铺业绩图表菜单：</a>
+								<h:outputLabel value="此菜单反映店铺经营状况的图表结合，展示店铺盈亏走势。" />
+
+								<a href="/eagle/pages/shop/StatShopManBuyChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">店铺客单价菜单：</a>
+								<h:outputLabel value="此菜单反映店铺客户购买平均单价的图表结合，让您了解购买量很高但是盈利低的根源。" />
+
+								<a href="/eagle/pages/shop/StatShopExchangeRateChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">店铺转换率菜单：</a>
+								<h:outputLabel
+									value="此菜单反映店铺客服接待客户与最终下单付款客户间关系图表结合，让您知道每天客服都很忙但是生意量并不高的根源。" />
+
+								<a href="/eagle/pages/shop/StatShopWorkLoadChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">店铺工作量菜单：</a>
+								<h:outputLabel
+									value="此菜单反映店铺客服接待客户每天总量和平均值的图表，给您呈现每天客服的工作是否充实的走势。" />
+
+								<a href="/eagle/pages/shop/StatShopAvgWaitTimeChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">店铺平均首次响应菜单：</a>
+								<h:outputLabel
+									value="此菜单反映店铺客服响应客户询单的时间间隔的图表，通过它，您能够明白客户流失惨重的原因。" />
+
+								<a href="/eagle/pages/shop/StatShopRefundRateChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">店铺退款率菜单：</a>
+								<h:outputLabel
+									value="此菜单反映店铺内退款金额所占交易总金额之间比率的图表，让您深入了解退款笔数很低但是为什么不赚钱的困扰。" />
+
+								<a href="/eagle/pages/shop/StatShopOnlineTimeChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">店铺客服在线时间菜单：</a>
+								<h:outputLabel value="此菜单反映店铺内所有客服的在线时间总计和平均值，让您对客服每天上班时间一目了然。" />
+							</h:panelGrid>
+						</p:panel>
+
+						<p:panel header="客服对比模块">
+							<h:panelGrid columns="2">
+								<a href="/eagle/pages/staff/StatOwnersAchievement.xhtml"
+									style="color: OrangeRed; font-weight: bold;">客服业绩状况菜单：</a>
+								<h:outputLabel
+									value="此菜单反映自定义时间段内各个客服业绩状况的图表，提供客服取得的付款交易、退款、当天盈亏等业绩数据指标。" />
+								<a href="/eagle/pages/staff/StatOwnersAchievement.xhtml"
+									style="color: OrangeRed; font-weight: bold;">客服交易数目状况菜单：</a>
+								<h:outputLabel
+									value="此菜单反映自定义时间段内各个客服交易数目状况的图标，让您清晰了解各个客服的交易数量。" />
+
+								<a href="/eagle/pages/staff/StatStaffAvgWaitTimeChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">客服首次响应时间菜单：</a>
+								<h:outputLabel value="此菜单反映各个客服响应客户询单的时间间隔的图表，通过它，您能够明白谁在怠工。" />
+
+								<a href="/eagle/pages/staff/StatStaffWorkLoadChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">客服工作量菜单：</a>
+								<h:outputLabel
+									value="此菜单反映自定义时间段内各个客服接待客户每天总量和平均值的图表，让您知道店铺内工作分配是否均衡。" />
+
+								<a href="/eagle/pages/staff/StatStaffExchangeRateChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">客服转换率菜单：</a>
+								<h:outputLabel
+									value="此菜单反映自定义时间段内各个客服接待客户与最终下单付款客户间关系图表结合，让您知道谁的工作效率最高。" />
+
+								<a href="/eagle/pages/staff/StatStaffManBuyChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">客服客单价菜单：</a>
+								<h:outputLabel
+									value="此菜单反映自定义时间段内各个客服所属客户购买平均单价的图表结合，让您了解谁创造的每笔生意更有质量。" />
+
+								<a href="/eagle/pages/staff/StatStaffRefundRateChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">客服退款率菜单：</a>
+								<h:outputLabel
+									value="此菜单反映自定义时间段内各个客服对应交易的退款金额所占其交易总金额之间比率的图表，让您深入了解谁在拖大家的后腿。" />
+
+								<a href="/eagle/pages/shop/StatShopOnlineTimeChart.xhtml"
+									style="color: OrangeRed; font-weight: bold;">客服在线时间菜单：</a>
+								<h:outputLabel value="此菜单反映自定义时间段内各个客服的在线时间统计图表，让您深入了解每个人的上班时间。" />
+							</h:panelGrid>
+						</p:panel>
+						<p:panel header="销售排行模块">
+							<h:panelGrid columns="2">
+								<a href="/eagle/pages/rank/GoodsSaleAmountRank.xhtml"
+									style="color: OrangeRed; font-weight: bold;">商品销售金额排行榜菜单：</a>
+								<h:outputLabel
+									value="此菜单反映自定义时间段内，店铺中销售金额最高的前十大商品及金额列表，使您的宣传更有针对性。" />
+
+								<a href="/eagle/pages/rank/GoodsSaleNumRank.xhtml"
+									style="color: OrangeRed; font-weight: bold;">商品销售数量排行榜菜单：</a>
+								<h:outputLabel
+									value="此菜单反映自定义时间段内，店铺中销售数量最高的前十大商品及数量列表，看看那些商品最畅销。" />
+
+								<a href="/eagle/pages/rank/GoodsRefundRank.xhtml"
+									style="color: OrangeRed; font-weight: bold;">商品退款金额排行榜菜单：</a>
+								<h:outputLabel
+									value="此菜单反映自定义时间段内，店铺中退款金额最高的前十大商品及金额列表，让您了解什么商品存在质量问题，及时弥补损失。" />
+
+								<a href="/eagle/pages/rank/CustomerSaleAmountRank.xhtml"
+									style="color: OrangeRed; font-weight: bold;">客户购买金额排行榜菜单：</a>
+								<h:outputLabel
+									value="此菜单反映自定义时间段内，店铺中购买商品金额最高的前十大客户及金额列表，让您及时抓住VIP客户。" />
+
+								<a href="/eagle/pages/rank/CustomerRefundRank.xhtml"
+									style="color: OrangeRed; font-weight: bold;">客户退款金额排行榜菜单：</a>
+								<h:outputLabel
+									value="此菜单反映自定义时间段内，店铺中退款金额最高的前十大客户及金额列表，让您及时找到客户危机的源头。" />
+							</h:panelGrid>
+						</p:panel>
+						<p:panel header="交易管理模块">
+							<h:panelGrid columns="2">
+								<a href="/eagle/pages/detail/TradeDetail.xhtml"
+									style="color: OrangeRed; font-weight: bold;">已付款交易管理菜单：</a>
+								<h:outputLabel value="此菜单让您能够在任意时间段内，查看已付款交易详情，人工修改交易归属，并刷新报表。" />
+							</h:panelGrid>
+						</p:panel>
+						<p:panel header="中差评管理模块">
+							<h:panelGrid columns="2">
+								<a href="/eagle/pages/traderate/TradeRateDetail.xhtml"
+									style="color: OrangeRed; font-weight: bold;">中差评管理菜单：</a>
+								<h:outputLabel value="此菜单让您能够在任意时间段内，查看已存在的中差评详情，人工修改中差评责任人。" />
+							</h:panelGrid>
+						</p:panel>
+						<p:panel header="工资结算模块">
+							<h:panelGrid columns="2">
+								<a href="/eagle/pages/salary/SalaryConfig.xhtml"
+									style="color: OrangeRed; font-weight: bold;">通用工资模板菜单：</a>
+								<h:outputLabel
+									value="此菜单让您自由灵活的自定义各种与工资相关的参数，便于您奖励和惩罚相应的客服。（为设置个性化模版的客服，工资计算将使用此模板。）" />
+								<a href="/eagle/pages/salary/SpecialSalaryConfig.xhtml"
+									style="color: OrangeRed; font-weight: bold;">个性化工资模版菜单：</a>
+								<h:outputLabel
+									value="此菜单让您自由灵活的自定义各种与工资相关的参数，便于您奖励和惩罚相应的客服。（设置后可指定给对应客服）" />
+								<a href="/eagle/pages/salary/SalaryConfigOwner.xhtml"
+									style="color: OrangeRed; font-weight: bold;">客服工资模板指定菜单：</a>
+								<h:outputLabel value="此菜单让您自由灵活的自定义各种与工资相关的参数，便于您奖励和惩罚相应的客服。" />
+								<a href="/eagle/pages/salary/SalaryCalculate.xhtml"
+									style="color: OrangeRed; font-weight: bold;">工资结算菜单：</a>
+								<h:outputLabel
+									value="此菜单让您能够在任意时间段内，与客服进行工资结算，解决您的店铺每月工资结算日不是1号的困扰。" />
+								<a href="/eagle/pages/salary/SalarySettlementHistory.xhtml"
+									style="color: OrangeRed; font-weight: bold;">工资已结算历史查询菜单：</a>
+								<h:outputLabel value="此菜单让您能够查询已经结算工资历史清单。" />
+							</h:panelGrid>
+						</p:panel>
+						<p:panel header="系统设置模块">
+							<h:panelGrid columns="2">
+								<a href="/eagle/pages/setting/StaffSetting.xhtml"
+									style="color: OrangeRed; font-weight: bold;">客服管理菜单：</a>
+								<h:outputLabel value="此菜单让您轻松添加和删除需要统计的客服。" />
+
+								<a href="/eagle/pages/setting/ItemSetting.xhtml"
+									style="color: OrangeRed; font-weight: bold;">商品过滤菜单：</a>
+								<h:outputLabel value="此菜单让您轻松添加和删除需要从统计中剔除的补差价，补邮费商品。" />
+
+								<a href="/eagle/pages/setting/BelongTypeSetting.xhtml"
+									style="color: OrangeRed; font-weight: bold;">业绩归属方式菜单：</a>
+								<h:outputLabel value="此菜单让您自由设置自己希望的业绩归属方式。" />
+
+								<a href="/eagle/pages/setting/ReadModifySetting.xhtml"
+									style="color: OrangeRed; font-weight: bold;">密码解锁及控制：</a>
+								<h:outputLabel value="此菜单让您自由设置读写密码，有效控制关键属性修改和查看权限。" />
+
+								<a href="/eagle/pages/setting/ReadLockSetting.xhtml"
+									style="color: OrangeRed; font-weight: bold;">查看权限设置：</a>
+								<h:outputLabel value="此菜单让您自由设置自己希望的客服登录系统后查看的页面。" />
+							</h:panelGrid>
+						</p:panel>
+					</h:panelGrid>
+				</p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

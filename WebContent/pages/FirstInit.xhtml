@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>初始化</title>
+</h:head>
+<body>
+	<ui:composition template="/pages/templates/masterTemplateNoMenu.xhtml">
+		<ui:define name="content">
+			<h:form style="margin-right:100px; overflow:auto;">
+				<h:outputText
+					value="*重要提示首次使用一定要设置绩效客服号，设置完成后本系统才能正常使用（店铺帐号必须有1个以上旺旺小号才可以，否则系统将无法使用，添加旺旺小号，请在我是卖家->店铺管理->权限管理->用户管理）"
+					style="color:OrangeRed;font-size:large;font-weight:bold;" />
+				<p:separator />
+				<p:growl id="growl" showDetail="true" />
+				<p:panel header="鹰眼系统初始化过程，请亲认真填写哦，否则系统将无法使用~~">
+					<p:wizard widgetVar="wiz"
+						flowListener="#{userConfig.onFlowProcess}" nextLabel="下一步"
+						backLabel="前一步" style="overflow:auto;">
+						<p:tab id="addstaff" title="第一步：添加客服">
+							<p:panel header="添加需统计客服">
+								<h:messages errorStyle="font-weight:bold;color: red;" />
+								<h:panelGrid columns="1">
+									<p:pickList id="staff" value="#{userConfig.allStaffs}"
+										var="staff" itemLabel="#{staff}" itemValue="#{staff}"
+										addAllLabel="添加所有" addLabel="添加" removeAllLabel="去除所有"
+										removeLabel="去除" required="true"
+										requiredMessage="首次使用，请添加至少一个员工">
+										<f:facet name="sourceCaption">待添加客服列表</f:facet>
+										<f:facet name="targetCaption">已添加客服列表</f:facet>
+									</p:pickList>
+									<p:panel header="帮助与提示">
+										<p:lightBox>
+											<h:outputLink value="#" title="点此查看图文帮助">
+												<h:outputText style="color:OrangeRed;"
+													value="帮助：点击或拖拽左侧客服至右侧列表! 点此查看图文帮助!" />
+											</h:outputLink>
+											<f:facet name="inline">
+												<h:graphicImage value="/pages/img/help1.gif" />
+											</f:facet>
+										</p:lightBox>
+										<h:panelGrid columns="2">
+											<h:outputLabel
+												style="color:OrangeRed;text-align:right;font-weight:bold;"
+												value="问：为什么要添加客服？" />
+											<h:outputLabel value="答：添加客服是为了能够在日后统计中将此客服列为绩效考评对象。" />
+										</h:panelGrid>
+									</p:panel>
+									<h:outputText
+										style="color:OrangeRed;text-align:right;font-weight:bold;"
+										value="亲，添加完客服别忘记点[下一步]哦!" />
+								</h:panelGrid>
+							</p:panel>
+
+						</p:tab>
+						<p:tab id="nocalculateitem" title="第二步：商品过滤">
+							<p:panel header="添加不计入统计商品ID（如邮费差价等）">
+								<p:messages id="msg" showDetail="true" />
+								<h:panelGrid columns="1">
+									<h:panelGrid columns="3" columnClasses="label, value"
+										styleClass="grid">
+										<h:outputText value="不计入统计商品ID（如邮费差价等） ：" />
+										<h:inputText id="inputItem" label="商品ID"
+											value="#{userConfig.addItem}" title="请输入数字，并点击[添加]"
+											style="width : 150px;" />
+										<p:commandButton value="添加"
+											actionListener="#{userConfig.addNoCalCulateItems}"
+											update="noCalculateItemTable msg" />
+										
+									</h:panelGrid>
+									<h:outputText style="color:OrangeRed;font-weight:bold;" value="觉得业绩不准确？请首先查看剔除商品，剔除商品是不计入统计业绩的商品，差价等请一定放入剔除商品，尤其是以件数来计算业绩的，重要！！！" />
+									<p:dataTable id="noCalculateItemTable"
+										value="#{userConfig.noCalculateItems}" var="noCalculateitem">
+										<p:column headerText="已添加商品ID">
+											<p:lightBox iframe="true" width="80%" height="80%">
+												<h:outputLink
+													value="http://item.taobao.com/item.htm?id=#{noCalculateitem}"
+													title="过滤商品">
+													<h:outputText value="#{noCalculateitem}"
+														title="点击可查看详细商品信息，判断是否添加准确哦!" />
+												</h:outputLink>
+											</p:lightBox>
+										</p:column>
+										<p:column headerText="删除">
+											<p:commandButton oncomplete="confirmation.show()"
+												title="Delete" icon="ui-icon ui-icon-close">
+												<f:setPropertyActionListener value="#{noCalculateitem}"
+													target="#{userConfig.selectedItem}" />
+											</p:commandButton>
+										</p:column>
+									</p:dataTable>
+									<br />
+
+									<p:panel header="帮助与提示">
+										<h:graphicImage value="/pages/img/nocalculate.jpg"
+											style=" width : 730px;" />
+										<h:panelGrid columns="2">
+											<h:outputLabel
+												style="color:OrangeRed;text-align:right;font-weight:bold;"
+												value="问：什么叫过滤商品？" />
+											<h:outputLabel
+												value="答：过滤商品是店主在客服绩效和工资统计过程中不希望被计入业绩的商品。如补差价链接，补邮费链接等。" />
+											<h:outputLabel
+												style="color:OrangeRed;text-align:right;font-weight:bold;"
+												value="问：为什么要添加过滤商品？" />
+											<h:outputLabel value="答：添加后此ID商品将在工资和业绩计算过程中自动被剔除，使统计结果更加精准。" />
+										</h:panelGrid>
+									</p:panel>
+									<p:watermark for="inputItem" value="请输入整数，并点击添加" />
+								</h:panelGrid>
+							</p:panel>
+						</p:tab>
+						<p:tab id="belongType" title="第三步：业绩归属方式">
+							<p:panel header="选择业绩归属方式">
+								<h:panelGrid id="belongTypePanel" columns="1">
+									<h:panelGrid columns="3" columnClasses="label, value"
+										styleClass="grid">
+										<h:panelGrid columns="2">
+											<h:outputText value="业务归属方式 ：" />
+											<p:selectOneRadio value="#{userConfig.belongType}"
+												layout="pageDirection">
+												<f:selectItem itemLabel="客户付款前48小时第一个与之沟通的客服" itemValue="1" />
+												<f:selectItem itemLabel="客户付款前48小时最后一个与之沟通的客服" itemValue="2" />
+												<f:selectItem itemLabel="客户付款前48小时与之沟通最多的客服" itemValue="6" />
+												<f:selectItem itemLabel="客户交易创建前48小时第一个与之沟通的客服"
+													itemValue="3" />
+												<f:selectItem itemLabel="客户交易创建前48小时最后一个与之沟通的客服"
+													itemValue="4" />
+												<f:selectItem itemLabel="客户交易创建前48小时与之沟通最多的客服" itemValue="5" />
+												<f:selectItem itemLabel="根据卖家插旗判定" itemValue="7" />
+												<p:ajax update="belongTypePanel" />
+											</p:selectOneRadio>
+										</h:panelGrid>
+										<p:spacer />
+										<h:panelGrid id="flagPanel" columns="2"
+											rendered="#{userConfig.belongType eq 7}">
+											<p:spacer />
+											<h:outputText value="设置彩旗对应客服 ：" />
+											<img
+												src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_1.png" />
+											<h:selectOneMenu value="#{userConfig.flag_red_owner}">
+												<f:selectItem itemLabel="无" itemValue="_none" />
+												<f:selectItems value="#{userConfig.choosedStaff}"
+													var="staff" itemLabel="#{staff.staffId}"
+													itemValue="#{staff.staffId}" />
+											</h:selectOneMenu>
+											<img
+												src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_2.png" />
+											<h:selectOneMenu value="#{userConfig.flag_yellow_owner}">
+												<f:selectItem itemLabel="无" itemValue="_none" />
+												<f:selectItems value="#{userConfig.choosedStaff}"
+													var="staff" itemLabel="#{staff.staffId}"
+													itemValue="#{staff.staffId}" />
+											</h:selectOneMenu>
+											<img
+												src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_3.png" />
+											<h:selectOneMenu value="#{userConfig.flag_green_owner}">
+												<f:selectItem itemLabel="无" itemValue="_none" />
+												<f:selectItems value="#{userConfig.choosedStaff}"
+													var="staff" itemLabel="#{staff.staffId}"
+													itemValue="#{staff.staffId}" />
+											</h:selectOneMenu>
+											<img
+												src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_4.png" />
+											<h:selectOneMenu value="#{userConfig.flag_blue_owner}">
+												<f:selectItem itemLabel="无" itemValue="_none" />
+												<f:selectItems value="#{userConfig.choosedStaff}"
+													var="staff" itemLabel="#{staff.staffId}"
+													itemValue="#{staff.staffId}" />
+											</h:selectOneMenu>
+											<img
+												src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_5.png" />
+											<h:selectOneMenu value="#{userConfig.flag_pupple_owner}">
+												<f:selectItem itemLabel="无" itemValue="_none" />
+												<f:selectItems value="#{userConfig.choosedStaff}"
+													var="staff" itemLabel="#{staff.staffId}"
+													itemValue="#{staff.staffId}" />
+											</h:selectOneMenu>
+										</h:panelGrid>
+									</h:panelGrid>
+									<p:panel header="帮助与提示">
+										<h:panelGrid columns="2">
+											<h:outputLabel
+												style="color:OrangeRed;text-align:right;font-weight:bold;"
+												value="问：什么叫客户付款前48小时第一个与之沟通的客服？" />
+											<h:outputLabel value="答：指业绩属于客户下单并付款时间点前第一个回复客户的客服。" />
+											<h:outputLabel
+												style="color:OrangeRed;text-align:right;font-weight:bold;"
+												value="问：什么叫客户付款前48小时最后一个与之沟通的客服？" />
+											<h:outputLabel value="答：指业绩属于客户下单并付款时间点前最后一个回复客户的客服。" />
+											<h:outputLabel
+												style="color:OrangeRed;text-align:right;font-weight:bold;"
+												value="问：什么叫客户付款前48小时与之沟通最多的客服？" />
+											<h:outputLabel value="答：指业绩属于客户下单并付款时间点前与客户聊天句数总和最多的客服。" />
+											<h:outputLabel
+												style="color:OrangeRed;text-align:right;font-weight:bold;"
+												value="问：什么叫客户交易创建前48小时第一个与之沟通的客服？" />
+											<h:outputLabel value="答：指业绩属于客户下单的时间点前第一个回复客户的客服。" />
+											<h:outputLabel
+												style="color:OrangeRed;text-align:right;font-weight:bold;"
+												value="问：什么叫客户交易创建前48小时最后一个与之沟通的客服？" />
+											<h:outputLabel value="答：指业绩属于客户下单的时间点前最后一个回复客户的客服。" />
+											<h:outputLabel
+												style="color:OrangeRed;text-align:right;font-weight:bold;"
+												value="问：什么叫客户交易创建前48小时与之沟通最多的客服？" />
+											<h:outputLabel value="答：指业绩属于客户下单的时间点前与客户聊天句数总和最多的客服。" />
+											<h:outputLabel
+												style="color:OrangeRed;text-align:right;font-weight:bold;"
+												value="问：什么叫插旗归属？" />
+											<h:outputLabel value="答：指业绩属于订单所设置的卖家彩旗所对应的客服。" />
+										</h:panelGrid>
+									</p:panel>
+								</h:panelGrid>
+							</p:panel>
+						</p:tab>
+
+
+						<p:tab id="confirm" title="最后一步：确认">
+							<p:panel header="确认">
+								<h:panelGrid columns="2">
+									<h3>已添加客服清单:</h3>
+									<p:dataList value="#{userConfig.choosedStaff}" var="member"
+										type="ordered">  
+             						 #{member.staffId}   
+									</p:dataList>
+									<h3>已添加过滤商品:</h3>
+									<p:dataList value="#{userConfig.noCalculateItems}"
+										var="noCalculateItem" type="ordered">  
+             						   #{noCalculateItem}
+        					    </p:dataList>
+									<h3>业绩归属方式:</h3>
+									<p:selectOneMenu value="#{userConfig.belongType}"
+										disabled="true">
+										<f:selectItem itemLabel="客户付款前48小时第一个与之沟通的客服" itemValue="1" />
+										<f:selectItem itemLabel="客户付款前48小时最后一个与之沟通的客服" itemValue="2" />
+										<f:selectItem itemLabel="客户付款前48小时与之沟通最多的客服" itemValue="6" />
+										<f:selectItem itemLabel="客户交易创建前48小时第一个与之沟通的客服" itemValue="3" />
+										<f:selectItem itemLabel="客户交易创建前48小时最后一个与之沟通的客服" itemValue="4" />
+										<f:selectItem itemLabel="客户交易创建前48小时与之沟通最多的客服" itemValue="5" />
+										<f:selectItem itemLabel="根据卖家插旗判定" itemValue="7" />
+									</p:selectOneMenu>
+									<h:outputText value="彩旗对应的客服:"
+										rendered="#{userConfig.belongType eq 7}" />
+									<h:panelGrid columns="2"
+										rendered="#{userConfig.belongType eq 7}">
+										<img
+											src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_1.png" />
+										<p:selectOneMenu value="#{userConfig.flag_red_owner}"
+											disabled="true">
+											<f:selectItem itemLabel="无" itemValue="_none" />
+											<f:selectItems value="#{userConfig.choosedStaff}" var="staff"
+												itemLabel="#{staff.staffId}" itemValue="#{staff.staffId}" />
+										</p:selectOneMenu>
+										<img
+											src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_2.png" />
+										<p:selectOneMenu value="#{userConfig.flag_yellow_owner}"
+											disabled="true">
+											<f:selectItem itemLabel="无" itemValue="_none" />
+											<f:selectItems value="#{userConfig.choosedStaff}" var="staff"
+												itemLabel="#{staff.staffId}" itemValue="#{staff.staffId}" />
+										</p:selectOneMenu>
+										<img
+											src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_3.png" />
+										<p:selectOneMenu value="#{userConfig.flag_green_owner}"
+											disabled="true">
+											<f:selectItem itemLabel="无" itemValue="_none" />
+											<f:selectItems value="#{userConfig.choosedStaff}" var="staff"
+												itemLabel="#{staff.staffId}" itemValue="#{staff.staffId}" />
+										</p:selectOneMenu>
+										<img
+											src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_4.png" />
+										<p:selectOneMenu value="#{userConfig.flag_blue_owner}"
+											disabled="true">
+											<f:selectItem itemLabel="无" itemValue="_none" />
+											<f:selectItems value="#{userConfig.choosedStaff}" var="staff"
+												itemLabel="#{staff.staffId}" itemValue="#{staff.staffId}" />
+										</p:selectOneMenu>
+										<img
+											src="http://a.tbcdn.cn/sys/common/icon/trade/op_memo_5.png" />
+										<p:selectOneMenu value="#{userConfig.flag_pupple_owner}"
+											disabled="true">
+											<f:selectItem itemLabel="无" itemValue="_none" />
+											<f:selectItems value="#{userConfig.choosedStaff}" var="staff"
+												itemLabel="#{staff.staffId}" itemValue="#{staff.staffId}" />
+										</p:selectOneMenu>
+									</h:panelGrid>
+									<p:commandButton value="提交" update="growl"
+										actionListener="#{userConfig.save}"
+										oncomplete="alert('保存成功！亲！当完成设置后，即可使用鹰眼系统进行客服业绩和工资统计啦。我们将为您自动读取客服数据，计算对应报表，首次客服绩效数据的抽取与计算需要10至60分钟左右完成哦。请耐心等待，谢谢！');window.location='/eagle/pages/index.xhtml';" />
+									<h:outputText
+										style="color:OrangeRed;text-align:right;font-weight:bold;"
+										value="亲，确认无误后别忘了点击[提交]哦!" />
+								</h:panelGrid>
+							</p:panel>
+						</p:tab>
+					</p:wizard>
+				</p:panel>
+				<p:dialog header="确认框" widgetVar="confirmation" height="100">
+					<br />
+					<br />
+					<h:outputText value="是否删除    #{userConfig.selectedItem} ？" />
+					<br />
+					<br />
+					<p:commandButton value="是" update="noCalculateItemTable"
+						oncomplete="confirmation.hide()" icon="ui-icon ui-icon-disk"
+						actionListener="#{userConfig.deleteNoCalCulateItems}" />
+					<p:commandButton value="否" onclick="confirmation.hide()"
+						type="button" />
+				</p:dialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

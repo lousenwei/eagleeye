@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/pages/templates/masterTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="ReadWriteForm">
+			<p:growl autoUpdate="true" showDetail="true" />
+			<h2 align="center" style="color:Red;font-weight:bold;">亲，您所查看的也页面需要查看密码，请解锁，解锁后即可查看！</h2>
+			<p:separator />
+			<p:panel header="密码解锁区">
+				<h:panelGrid columns="2">
+					<p:panel header="查看密码解锁">
+						<h:panelGrid columns="2">
+							<h:outputText value="查看权限密码 ：" />
+							<p:password maxlength="50" value="#{RMSetting.readPsd}"
+								goodLabel="强" weakLabel="弱" promptLabel="请输入查看密码" />
+							<p:commandButton value="解锁" disabled="#{!naviBean.readLock}"
+								actionListener="#{RMSetting.unlockReadLock}"
+								update="ReadWriteForm" />
+							<h:outputLabel value="查看锁定已经解除～" rendered="#{!naviBean.readLock}" />
+						</h:panelGrid>
+					</p:panel>
+					<p:panel header="修改密码解锁">
+						<h:panelGrid columns="2">
+							<h:outputText value="修改权限密码 ：" />
+							<p:password maxlength="50" value="#{RMSetting.modifyPsd}"
+								goodLabel="强" weakLabel="弱" promptLabel="请输入修改密码" />
+							<p:commandButton value="解锁" disabled="#{!naviBean.modifyLock}"
+								actionListener="#{RMSetting.unlockModifyLock}"
+								update="ReadWriteForm" />
+							<h:outputLabel value="修改锁定已经解除～"
+								rendered="#{!naviBean.modifyLock}" />
+						</h:panelGrid>
+					</p:panel>
+				</h:panelGrid>
+			</p:panel>
+			<p:panel header="帮助与提示">
+				<h:panelGrid columns="2">
+					<h:outputLabel
+						style="color:OrangeRed;text-align:right;font-weight:bold;"
+						value="问：查看密码解锁后能够做什么？" />
+					<h:outputLabel value="答：查看密码解锁后，用户可以查看所有需要查看密码的页面。需要查看密码的页面可以自由设置。" />
+					<h:outputLabel
+						style="color:OrangeRed;text-align:right;font-weight:bold;"
+						value="问：修改密码解锁后能够做什么？" />
+					<h:outputLabel
+						value="答：修改密码解锁后，用户可以修改重要配置信息并保存，诸如业务归属、客服添加、工资模板、工资结算、业务归属规则等重要信息。" />
+				</h:panelGrid>
+			</p:panel>
+			<p:ajaxStatus
+				style="position:absolute;width:61px;height:59px;z-index:20;left:400px;top:200px">
+				<f:facet name="start">
+					<h:graphicImage width="199" height="64"
+						value="../img/ajax_loader.gif" />
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

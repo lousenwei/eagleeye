@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<ui:include src="/pages/templates/version.xhtml" />
+</h:head>
+
+<h:body>
+	<h1>出错啦！您还未登录或长时间未操作！请重新登录</h1>
+	<hr />
+	<h3>请通过淘宝网登陆认证或通过“我的淘宝”右侧的功能区进入！</h3>
+	<a
+		href="https://oauth.taobao.com/authorize?response_type=code&amp;client_id=#{user.appKey}&amp;redirect_uri=#{user.baseUrl}"
+		style="color: #FF8080;">点此从淘宝免登至鹰眼</a>
+	<br />
+	<br />
+	<a href="http://i.taobao.com/home.htm" style="color: #FF8080;">点此返回淘宝浏览其他</a>
+	<br />
+	<br />
+	<a href="#"
+		onclick="if(confirm('确认关闭当前页？')){window.opener=null;window.open('','_self');window.close();}"
+		style="color: #FF8080;">关闭当前页</a>
+</h:body>
+</html>

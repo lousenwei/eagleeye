@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+	<!-- statistcs dao -->
+	<bean id="statAchievementDao" class="com.eagleeye.statistics.dao.StatAchievementDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="noCalculateItemDao" class="com.eagleeye.statistics.dao.NoCalculateItemDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="rankStatisticsDao" class="com.eagleeye.statistics.dao.RankStatisticsDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="belongTypeDao" class="com.eagleeye.statistics.dao.BelongTypeDAO"
+		parent="baseDao">
+	</bean>
+
+	<!-- statistcs blh -->
+	<bean id="tradeStatBlh" class="com.eagleeye.statistics.blh.impl.TradeStatBlhImpl">
+		<property name="tradeSoldDao" ref="tradeSoldDao" />
+		<property name="chatPeersDao" ref="chatPeersDao" />
+		<property name="belongTypeBlh" ref="belongTypeBlh" />
+		<property name="noCalculateItemDao" ref="noCalculateItemDao" />
+		<property name="groupMemberDao" ref="groupMemberDao"/>
+		<property name="managerInfoDao" ref="managerInfoDao"/>
+	</bean>
+	<bean id="statAchievementBlh" class="com.eagleeye.statistics.blh.impl.StatAchievementBlhImpl">
+		<property name="statAchievementDao" ref="statAchievementDao"></property>
+		<property name="groupMemberDao" ref="groupMemberDao"></property>
+	</bean>
+	<bean id="noCalCulateItemBlh" class="com.eagleeye.statistics.blh.impl.NoCalCulateItemBlhImpl">
+		<property name="noCalculateItemDao" ref="noCalculateItemDao"></property>
+	</bean>
+	<bean id="rankStatisticsBlh" class="com.eagleeye.statistics.blh.impl.RankStatisticsBlhImpl">
+		<property name="rankStatisticsDao" ref="rankStatisticsDao"></property>
+	</bean>
+	<bean id="belongTypeBlh" class="com.eagleeye.statistics.blh.impl.BelongTypeBlhImpl">
+		<property name="belongTypeDao" ref="belongTypeDao" />
+		<property name="tradeSoldDao" ref="tradeSoldDao" />
+		<property name="chatPeersDao" ref="chatPeersDao" />
+		<property name="chatLogBlh" ref="chatLogBlh" />
+		<property name="groupMemberDao" ref="groupMemberDao"/>
+	</bean>
+
+	<!-- statistcs bsh -->
+	<bean id="tradeStatBsh" class="com.eagleeye.statistics.bsh.impl.TradeStatBshImpl">
+		<property name="tradeStatBlh" ref="tradeStatBlh"></property>
+	</bean>
+	<bean id="statAchievementBsh" class="com.eagleeye.statistics.bsh.impl.StatAchievementBshImpl">
+		<property name="statAchievementBlh" ref="statAchievementBlh"></property>
+	</bean>
+	<bean id="noCalCulateItemBsh" class="com.eagleeye.statistics.bsh.impl.NoCalCulateItemBshImpl">
+		<property name="noCalCulateItemBlh" ref="noCalCulateItemBlh"></property>
+	</bean>
+	<bean id="rankStatisticsBsh" class="com.eagleeye.statistics.bsh.impl.RankStatisticsBshImpl">
+		<property name="rankStatisticsBlh" ref="rankStatisticsBlh"></property>
+	</bean>
+	<bean id="belongTypeBsh" class="com.eagleeye.statistics.bsh.impl.BelongTypeBshImpl">
+		<property name="belongTypeBlh" ref="belongTypeBlh"></property>
+	</bean>
+	<!-- statistcs provider -->
+
+</beans>

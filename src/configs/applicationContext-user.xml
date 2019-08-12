@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+	<!-- user dao -->
+	<bean id="groupMemberDao" class="com.eagleeye.user.dao.GroupMemberDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="managerInfoDao" class="com.eagleeye.user.dao.ManagerInfoDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="totalUpdateDao" class="com.eagleeye.user.dao.TotalUpdateDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="incrementUpdateDao" class="com.eagleeye.user.dao.IncrementUpdateDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="readLockDao" class="com.eagleeye.user.dao.ReadLockDAO"
+		parent="baseDao">
+	</bean>
+
+	<!-- user blh -->
+	<bean id="groupMemberBlh" class="com.eagleeye.user.blh.impl.GroupMemberBlhImpl">
+		<property name="groupMemberDao" ref="groupMemberDao"></property>
+	</bean>
+	<bean id="managerInfoBlh" class="com.eagleeye.user.blh.impl.ManagerInfoBlhImpl">
+		<property name="managerInfoDao" ref="managerInfoDao"></property>
+	</bean>
+	<bean id="incrementUpdateBlh" class="com.eagleeye.user.blh.impl.IncrementUpdateBlhImpl">
+		<property name="incrementUpdateDao" ref="incrementUpdateDao"></property>
+	</bean>
+	<bean id="totalUpdateBlh" class="com.eagleeye.user.blh.impl.TotalUpdateBlhImpl">
+		<property name="totalUpdateDao" ref="totalUpdateDao"></property>
+	</bean>
+	<bean id="readLockBlh" class="com.eagleeye.user.blh.impl.ReadLockBlhImpl">
+		<property name="readLockDao" ref="readLockDao"></property>
+	</bean>
+
+	<!-- user bsh -->
+	<bean id="managerInfoBsh" class="com.eagleeye.user.bsh.impl.ManagerInfoBshImpl">
+		<property name="managerInfoBlh" ref="managerInfoBlh"></property>
+	</bean>
+	<bean id="userBsh" class="com.eagleeye.user.bsh.impl.UserBshImpl">
+	</bean>
+	<bean id="groupMemberBsh" class="com.eagleeye.user.bsh.impl.GroupMemberBshImpl">
+		<property name="groupMemberBlh" ref="groupMemberBlh"></property>
+	</bean>
+	<bean id="readLockBsh" class="com.eagleeye.user.bsh.impl.ReadLockBshImpl">
+		<property name="readLockBlh" ref="readLockBlh"></property>
+	</bean>
+	<!-- user provider -->
+	<bean id="user" class="com.eagleeye.user.controller.UserController">
+		<property name="userBsh" ref="userBsh"></property>
+	</bean>
+	<bean id="incrementUpdateBsh" class="com.eagleeye.user.bsh.impl.IncrementUpdateBshImpl">
+		<property name="incrementUpdateBlh" ref="incrementUpdateBlh"></property>
+	</bean>
+	<bean id="totalUpdateBsh" class="com.eagleeye.user.bsh.impl.TotalUpdateBshImpl">
+		<property name="totalUpdateBlh" ref="totalUpdateBlh"></property>
+	</bean>
+</beans>

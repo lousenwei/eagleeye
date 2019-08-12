@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/pages/templates/masterTemplate.xhtml">
+	<ui:define name="content">
+		<h:form>
+			<p:fieldset legend="查询条件">
+				<h:panelGrid columns="11">
+					<h:outputLabel value="起始时间：" />
+					<p:calendar
+						value="#{statStaffOnlineTimeDtl.queryParametersMo.startTime}"
+						locale="zh_CN" pattern="yyyy-MM-dd" title="起始时间" navigator="true"></p:calendar>
+					<h:outputLabel value="终止时间：" />
+					<p:calendar
+						value="#{statStaffOnlineTimeDtl.queryParametersMo.endTime}"
+						locale="zh_CN" pattern="yyyy-MM-dd" title="终止时间" navigator="true"></p:calendar>
+					<h:outputLabel value="客服ID" />
+					<h:selectOneMenu
+						value="#{statStaffOnlineTimeDtl.queryParametersMo.staffId}">
+						<f:selectItems value="#{statStaffOnlineTimeDtl.members}"
+							var="member" itemLabel="#{member.id.serviceStaffId}"
+							itemValue="#{member.id.serviceStaffId}" />
+					</h:selectOneMenu>
+					<p:commandButton id="search" value="查询"
+						actionListener="#{statStaffOnlineTimeDtl.loadData}"
+						icon="ui-icon ui-icon-search"
+						update="staffStatChart statStaffOnlineTimeTable msg">
+					</p:commandButton>
+					<p:commandLink value="查询昨天"
+						actionListener="#{statStaffOnlineTimeDtl.loadData}"
+						update="staffStatChart statStaffOnlineTimeTable msg">
+						<f:param name="type" value="1" />
+					</p:commandLink>
+					<p:commandLink value="查询上周"
+						actionListener="#{statStaffOnlineTimeDtl.loadData}"
+						update="staffStatChart statStaffOnlineTimeTable msg">
+						<f:param name="type" value="2" />
+					</p:commandLink>
+					<p:commandLink value="查询上月"
+						actionListener="#{statStaffOnlineTimeDtl.loadData}"
+						update="staffStatChart statStaffOnlineTimeTable msg">
+						<f:param name="type" value="3" />
+					</p:commandLink>
+					<h:outputText value="亲，别忘了点击[查询]哦！"
+						style="color:OrangeRed;font-weight:bold;" />
+					<p:messages id="msg" showDetail="true" />
+				</h:panelGrid>
+			</p:fieldset>
+			<p:separator />
+			<p:accordionPanel id="staffStatChart">
+				<p:tab title="客服在线时间线性图">
+					<p:lineChart title="客服在线时间线性图"
+						value="#{statStaffOnlineTimeDtl.statStaffOnlineTimeDtlChartModel}"
+						legendPosition="ne" showDataLabels="true" dataFormat="value"></p:lineChart>
+				</p:tab>
+			</p:accordionPanel>
+			<p:separator />
+			<div>
+				<p:dataTable border="1" id="statStaffOnlineTimeTable"
+					value="#{statStaffOnlineTimeDtl.onlineTimeDtlMo.onlineMoList}"
+					var="onlineTimeItem">
+					<f:facet name="header">  
+           			 客服在线时间表格
+           			 <h:commandLink title="导出EXCEL" style="text-align:right;">
+							<p:graphicImage value="../img/excel.png" />
+							<h:outputLabel value="导出EXCEL"
+								style="color:OrangeRed;font-weight:bold;" />
+							<p:dataExporter type="xls" target="statStaffOnlineTimeTable"
+								fileName="export"
+								postProcessor="#{statStaffOnlineTimeDtl.postProcessXLS}" />
+						</h:commandLink>
+					</f:facet>
+					<p:columnGroup type="header">
+						<p:row>
+							<p:column rowspan="1" headerText="客服ID" />
+							<p:column colspan="1" headerText="统计日期"
+								sortBy="#{onlineTimeItem.statDate}" />
+							<p:column colspan="1" headerText="在线时间（小时）"
+								sortBy="#{onlineTimeItem.onlineime}" />
+							<p:column colspan="1" headerText="在线时间（工），8小时为1工"
+								sortBy="#{onlineTimeItem.onlineTimeForEightHours}" />
+						</p:row>
+					</p:columnGroup>
+					<p:column id="staffId">
+						<h:outputText value="#{onlineTimeItem.staffId}"></h:outputText>
+					</p:column>
+					<p:column id="statDate">
+						<h:outputText value="#{onlineTimeItem.statDate}"></h:outputText>
+					</p:column>
+					<p:column id="onlineTime">
+						<h:outputText value="#{onlineTimeItem.onlineTime}"></h:outputText>
+					</p:column>
+					<p:column id="onlineTimeHour">
+						<h:outputText value="#{onlineTimeItem.onlineTimeForEightHours}"></h:outputText>
+					</p:column>
+					<p:columnGroup type="footer">
+						<p:row>
+							<p:column colspan="1" footerText="汇总：" style="text-align:right" />
+							<p:column
+								footerText="平均每天：#{statStaffOnlineTimeDtl.onlineTimeDtlMo.avgStaffOnlineTime}（小时/天）" />
+							<p:column
+								footerText="总计：#{statStaffOnlineTimeDtl.onlineTimeDtlMo.sumStaffOnlineTime}（小时）" />
+							<p:column
+								footerText="平均工数：#{statStaffOnlineTimeDtl.onlineTimeDtlMo.sumStaffOnlineTimeForEightHours}（工/天）" />
+						</p:row>
+					</p:columnGroup>
+				</p:dataTable>
+			</div>
+			<p:separator />
+			<p:panel header="帮助与提示">
+				<h:panelGrid columns="2">
+					<h:outputLabel
+						style="color:OrangeRed;text-align:right;font-weight:bold;"
+						value="问：什么叫客服平均在线时间？" />
+					<h:outputLabel value="答：表示客服在此段时间内每天平均在线时间。" />
+					<h:outputLabel
+						style="color:OrangeRed;text-align:right;font-weight:bold;"
+						value="问：什么叫客服总在线时间？" />
+					<h:outputLabel value="答：表示客服在此段时间内总在线时间，以小时计算。" />
+					<h:outputLabel
+						style="color:OrangeRed;text-align:right;font-weight:bold;"
+						value="问：什么叫客服工数？" />
+					<h:outputLabel value="答：表示客服在此段时间内总在线工数，以8小时工作制计为1工。" />
+				</h:panelGrid>
+			</p:panel>
+			<p:ajaxStatus
+				style="position:absolute;width:61px;height:59px;z-index:20;left:400px;top:200px">
+				<f:facet name="start">
+					<h:graphicImage width="199" height="64"
+						value="../img/ajax_loader.gif" />
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

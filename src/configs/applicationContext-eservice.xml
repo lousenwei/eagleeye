@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+	<!-- eservice dao -->
+	<bean id="avgwaitTimeDao" class="com.eagleeye.eservice.dao.impl.AvgwaitTimeDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="chatPeersDao" class="com.eagleeye.eservice.dao.impl.ChatPeersDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="noreplyNumDao" class="com.eagleeye.eservice.dao.impl.NoreplyNumDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="receiveNumDao" class="com.eagleeye.eservice.dao.impl.ReceiveNumDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="onlineTimeDao" class="com.eagleeye.eservice.dao.impl.OnlineTimeDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="chatLogDao" class="com.eagleeye.eservice.dao.impl.ChatLogDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="tradeSoldDao" class="com.eagleeye.eservice.dao.impl.TradeSoldDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="refundDao" class="com.eagleeye.eservice.dao.impl.RefundDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="updateLogDao" class="com.eagleeye.eservice.dao.impl.UpdateLogDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="orderDao" class="com.eagleeye.eservice.dao.impl.OrderDAO"
+		parent="baseDao">
+	</bean>
+	<bean id="tradeRateDao" class="com.eagleeye.eservice.dao.impl.TradeRateDAO"
+		parent="baseDao">
+	</bean>
+
+
+	<!-- eservice blh -->
+	<bean id="avgwaitTimeBlh" class="com.eagleeye.eservice.blh.impl.AvgwaitTimeBlhImpl">
+		<property name="avgwaitTimeDao" ref="avgwaitTimeDao"></property>
+		<property name="groupMemberDao" ref="groupMemberDao"></property>
+	</bean>
+	<bean id="chatPeersBlh" class="com.eagleeye.eservice.blh.impl.ChatPeersBlhImpl">
+		<property name="chatPeersDao" ref="chatPeersDao"></property>
+		<property name="groupMemberDao" ref="groupMemberDao"></property>
+	</bean>
+	<bean id="noreplyNumBlh" class="com.eagleeye.eservice.blh.impl.NoreplyNumBlhImpl">
+		<property name="noreplyNumDao" ref="noreplyNumDao"></property>
+		<property name="groupMemberDao" ref="groupMemberDao"></property>
+	</bean>
+	<bean id="receiveNumBlh" class="com.eagleeye.eservice.blh.impl.ReceiveNumBlhImpl">
+		<property name="receiveNumDao" ref="receiveNumDao"></property>
+		<property name="groupMemberDao" ref="groupMemberDao"></property>
+	</bean>
+	<bean id="onlineTimeBlh" class="com.eagleeye.eservice.blh.impl.OnlineTimeBlhImpl">
+		<property name="onlineTimeDao" ref="onlineTimeDao"></property>
+		<property name="groupMemberDao" ref="groupMemberDao"></property>
+	</bean>
+	<bean id="chatLogBlh" class="com.eagleeye.eservice.blh.impl.ChatLogBlhImpl">
+		<property name="chatPeersDao" ref="chatPeersDao"></property>
+		<property name="groupMemberDao" ref="groupMemberDao"></property>
+		<property name="chatLogDao" ref="chatLogDao"></property>
+	</bean>
+	<bean id="tradeSoldBlh" class="com.eagleeye.eservice.blh.impl.TradeSoldBlhImpl">
+		<property name="tradeSoldDao" ref="tradeSoldDao" />
+		<property name="orderDao" ref="orderDao" />
+	</bean>
+	<bean id="refundBlh" class="com.eagleeye.eservice.blh.impl.RefundBlhImpl">
+		<property name="tradeSoldDao" ref="tradeSoldDao" />
+		<property name="refundDao" ref="refundDao"></property>
+	</bean>
+	<bean id="updateLogBlh" class="com.eagleeye.eservice.blh.impl.UpdateLogBlhImpl">
+		<property name="updateLogDao" ref="updateLogDao"></property>
+	</bean>
+	<bean id="tradeRateBlh" class="com.eagleeye.eservice.blh.impl.TradeRateBlhImpl">
+		<property name="tradeRateDao" ref="tradeRateDao"></property>
+	</bean>
+
+
+	<!-- eservice bsh -->
+	<bean id="avgwaitTimeBsh" class="com.eagleeye.eservice.bsh.impl.AvgwaitTimeBshImpl">
+		<property name="avgwaitTimeBlh" ref="avgwaitTimeBlh"></property>
+	</bean>
+	<bean id="chatPeersBsh" class="com.eagleeye.eservice.bsh.impl.ChatPeersBshImpl">
+		<property name="chatPeersBlh" ref="chatPeersBlh"></property>
+	</bean>
+	<bean id="noreplyNumBsh" class="com.eagleeye.eservice.bsh.impl.NoreplyNumBshImpl">
+		<property name="noreplyNumBlh" ref="noreplyNumBlh"></property>
+	</bean>
+	<bean id="receiveNumBsh" class="com.eagleeye.eservice.bsh.impl.ReceiveNumBshImpl">
+		<property name="receiveNumBlh" ref="receiveNumBlh"></property>
+	</bean>
+	<bean id="onlineTimeBsh" class="com.eagleeye.eservice.bsh.impl.OnlineTimeBshImpl">
+		<property name="onlineTimeBlh" ref="onlineTimeBlh"></property>
+	</bean>
+	<bean id="chatLogBsh" class="com.eagleeye.eservice.bsh.impl.ChatLogBshImpl">
+		<property name="chatLogBlh" ref="chatLogBlh"></property>
+	</bean>
+	<bean id="tradeSoldBsh" class="com.eagleeye.eservice.bsh.impl.TradeSoldBshImpl">
+		<property name="tradeSoldBlh" ref="tradeSoldBlh"></property>
+	</bean>
+	<bean id="refundBsh" class="com.eagleeye.eservice.bsh.impl.RefundBshImpl">
+		<property name="refundBlh" ref="refundBlh"></property>
+	</bean>
+	<bean id="updateLogBsh" class="com.eagleeye.eservice.bsh.impl.UpdateLogBshImpl">
+		<property name="updateLogBlh" ref="updateLogBlh"></property>
+	</bean>
+	<bean id="eServiceBsh" class="com.eagleeye.eservice.bsh.impl.EServiceBshImpl">
+		<property name="avgwaitTimeBlh" ref="avgwaitTimeBlh" />
+		<property name="chatPeersBlh" ref="chatPeersBlh" />
+		<property name="noreplyNumBlh" ref="noreplyNumBlh" />
+		<property name="receiveNumBlh" ref="receiveNumBlh" />
+		<property name="onlineTimeBlh" ref="onlineTimeBlh" />
+		<property name="tradeSoldBlh" ref="tradeSoldBlh" />
+		<property name="refundBlh" ref="refundBlh" />
+		<property name="updateLogBlh" ref="updateLogBlh" />
+		<property name="tradeStatBlh" ref="tradeStatBlh" />
+		<property name="groupMemberBlh" ref="groupMemberBlh" />
+		<property name="statAchievementBlh" ref="statAchievementBlh" />
+		<property name="belongTypeBlh" ref="belongTypeBlh" />
+		<property name="tradeRateBlh" ref="tradeRateBlh"></property>
+	</bean>
+	<bean id="tradeRateBsh" class="com.eagleeye.eservice.bsh.impl.TradeRateBshImpl">
+		<property name="tradeRateBlh" ref="tradeRateBlh"></property>
+	</bean>
+	<!-- eservice provider -->
+	<bean id="eagleEyeController" class="com.eagleeye.eservice.controller.EagleEyeController">
+	</bean>
+</beans>

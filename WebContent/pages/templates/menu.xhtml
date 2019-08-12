@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<p:panel header="功能菜单" />
+	<div>
+		<p:accordionPanel activeIndex="#{naviBean.menuNum}" autoHeight="true">
+			<p:tab title="店铺绩效">
+				<p:menu style="width:auto;">
+					<p:menuitem value="
+					店铺经营状况"
+						url="/pages/shop/StatAchievement.xhtml" />
+					<p:menuitem value="店铺业绩图表"
+						url="/pages/shop/StatAchievementShopChart.xhtml" />
+					<p:menuitem value="店铺业绩件数图表"
+						url="/pages/shop/StatAchievementNumShopChart.xhtml" />
+					<p:menuitem value="店铺客单价"
+						url="/pages/shop/StatShopManBuyChart.xhtml" />
+					<p:menuitem value="店铺转换率"
+						url="/pages/shop/StatShopExchangeRateChart.xhtml" />
+					<p:menuitem value="店铺工作量"
+						url="/pages/shop/StatShopWorkLoadChart.xhtml" />
+					<p:menuitem value="店铺平均首次响应"
+						url="/pages/shop/StatShopAvgWaitTimeChart.xhtml" />
+					<p:menuitem value="店铺退款率"
+						url="/pages/shop/StatShopRefundRateChart.xhtml" />
+					<p:menuitem value="店铺客服在线时间"
+						url="/pages/shop/StatShopOnlineTimeChart.xhtml" />
+				</p:menu>
+			</p:tab>
+
+			<p:tab title="客服明细">
+				<p:menu style="width:auto;">
+					<p:menuitem value="客服业绩金额明细"
+						url="/pages/staffDtl/StaffAchievementDtl.xhtml" />
+					<p:menuitem value="客服业绩件数明细"
+						url="/pages/staffDtl/StaffAchievementNumDtl.xhtml" />
+					<p:menuitem value="客服首次响应时间明细"
+						url="/pages/staffDtl/StaffAvgWaitTimeDtl.xhtml" />
+					<p:menuitem value="
+					客服工作量明细"
+						url="/pages/staffDtl/StaffWorkLoadDtl.xhtml" />
+					<p:menuitem value="
+					客服转换率明细"
+						url="/pages/staffDtl/StaffExchangeRateDtl.xhtml" />
+					<p:menuitem value="客服客单价明细"
+						url="/pages/staffDtl/StaffManBuyDtl.xhtml" />
+
+					<p:menuitem value="客服退款金额率明细"
+						url="/pages/staffDtl/StaffRefundRateDtl.xhtml" />
+					<p:menuitem value="客服在线时间明细"
+						url="/pages/staffDtl/StaffOnlineTimeDtl.xhtml" />
+				</p:menu>
+			</p:tab>
+
+			<p:tab title="客服比较">
+				<p:menu style="width:auto;">
+					<p:menuitem value="
+					客服业绩状况"
+						url="/pages/staff/StatOwnersAchievement.xhtml" />
+					<p:menuitem value="客服交易数目状况"
+						url="/pages/staff/StatOwnersNumAchievement.xhtml" />
+					<p:menuitem value="客服首次响应时间"
+						url="/pages/staff/StatStaffAvgWaitTimeChart.xhtml" />
+					<p:menuitem value="客服工作量"
+						url="/pages/staff/StatStaffWorkLoadChart.xhtml" />
+					<p:menuitem value="客服转换率"
+						url="/pages/staff/StatStaffExchangeRateChart.xhtml" />
+					<p:menuitem value="客服客单价"
+						url="/pages/staff/StatStaffManBuyChart.xhtml" />
+					<p:menuitem value="客服退款率"
+						url="/pages/staff/StatStaffRefundRateChart.xhtml" />
+					<p:menuitem value="客服在线时间"
+						url="/pages/staff/StatStaffOnlineTimeChart.xhtml" />
+				</p:menu>
+			</p:tab>
+
+			<p:tab title="销售排行">
+				<p:menu style="width:auto;">
+					<p:menuitem value="
+					商品销售金额排行榜"
+						url="/pages/rank/GoodsSaleAmountRank.xhtml" />
+					<p:menuitem value="商品销售数量排行榜"
+						url="/pages/rank/GoodsSaleNumRank.xhtml" />
+					<p:menuitem value="商品退款金额排行榜"
+						url="/pages/rank/GoodsRefundRank.xhtml" />
+					<p:menuitem value="客户购买金额排行榜"
+						url="/pages/rank/CustomerSaleAmountRank.xhtml" />
+					<p:menuitem value="客户退款金额排行榜"
+						url="/pages/rank/CustomerRefundRank.xhtml" />
+				</p:menu>
+			</p:tab>
+
+			<p:tab title="交易管理">
+				<p:menu style="width:auto;">
+					<p:menuitem value="
+					已付款待发货交易"
+						url="/pages/detail/PayedTradeDetail.xhtml" />
+					<p:menuitem value="
+					已发货待确认交易"
+						url="/pages/detail/SentTradeDetail.xhtml" />
+					<p:menuitem value="
+					已完成交易"
+						url="/pages/detail/FinishedTradeDetail.xhtml" />
+				</p:menu>
+			</p:tab>
+
+			<p:tab title="中差评管理">
+				<p:menu style="width:auto;">
+					<p:menuitem value="
+					中差评管理"
+						url="/pages/traderate/TradeRateDetail.xhtml" />
+				</p:menu>
+			</p:tab>
+
+			<p:tab title="工资结算">
+				<p:menu style="width:auto;">
+					<p:submenu label="工资模板设置">
+						<p:menuitem value="
+					通用工资模版设置"
+							url="/pages/salary/SalaryConfig.xhtml" />
+						<p:menuitem value="个性化工资模板设置"
+							url="/pages/salary/SpecialSalaryConfig.xhtml" />
+						<p:menuitem value="客服工资模板指定"
+							url="/pages/salary/SalaryConfigOwner.xhtml" />
+					</p:submenu>
+					<p:submenu label="工资结算">
+						<p:menuitem value="工资结算" url="/pages/salary/SalaryCalculate.xhtml" />
+						<p:menuitem value="工资已结算历史查询"
+							url="/pages/salary/SalarySettlementHistory.xhtml" />
+					</p:submenu>
+				</p:menu>
+			</p:tab>
+
+			<p:tab title="系统设置">
+				<p:menu style="width:auto;">
+					<p:menuitem value="
+					客服管理"
+						url="/pages/setting/StaffSetting.xhtml" />
+					<p:menuitem value="商品过滤管理" url="/pages/setting/ItemSetting.xhtml" />
+					<p:menuitem value="业绩归属方式管理"
+						url="/pages/setting/BelongTypeSetting.xhtml" />
+					<p:menuitem value="密码解锁及重置"
+						url="/pages/setting/ReadModifySetting.xhtml" />
+					<p:menuitem value="查看权限设置"
+						url="/pages/setting/ReadLockSetting.xhtml" />
+				</p:menu>
+			</p:tab>
+		</p:accordionPanel>
+		<p:separator />
+		<p:menu style="width:auto;">
+			<p:menuitem value="返回首页" url="/pages/index.xhtml" />
+		</p:menu>
+	</div>
+</ui:composition>
+</html>

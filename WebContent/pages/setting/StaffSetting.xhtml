@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/pages/templates/masterTemplate.xhtml">
+	<ui:define name="content">
+		<h:form>
+			<p:growl id="growl" showDetail="true" />
+			<p:panel header="添加客服">
+				<h:messages errorClass="error" />
+				<h:panelGrid columns="4">
+					<h:outputText value="客服ID ：" />
+					<p:selectManyMenu value="#{staffConfig.newStaffs}"
+						style="width:200px;">
+						<f:selectItems value="#{staffConfig.source}" var="staffToAdd"
+							itemLabel="#{staffToAdd}" itemValue="#{staffToAdd}" />
+					</p:selectManyMenu>
+					<p:commandButton value="添加" disabled="#{naviBean.modifyLock}"
+						actionListener="#{staffConfig.addStaff}" update="staffsTable"></p:commandButton>
+					<h:outputText value="亲，单击选择客服，可多选客服哦，然后点击[添加]按钮！下面列表已添加的客服不会被重复添加～"
+						style="color:#FF8080;font-size:medium;border-style:solid;border-color:OrangeRed;border-width:thin;" />
+				</h:panelGrid>
+			</p:panel>
+			<p:separator />
+			<p:panel header="已添加客服结果列表">
+				<p:dataTable id="staffsTable" value="#{staffConfig.allStaffs}"
+					var="staff">
+					<p:column headerText="已添加客服ID">
+						<h:outputText value="#{staff.id.serviceStaffId}" />
+					</p:column>
+					<p:column headerText="删除">
+						<p:commandButton onsuccess="confirmation.show()" title="Delete"
+							disabled="#{naviBean.modifyLock}" icon="ui-icon ui-icon-close">
+							<f:setPropertyActionListener value="#{staff.id.serviceStaffId}"
+								target="#{staffConfig.selectedStaff}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+			<p:separator />
+			<p:panel header="帮助与提示">
+				<p:lightBox>
+					<h:outputLink value="#" title="点此查看图文帮助">
+						<h:outputText style="color:OrangeRed;"
+							value="帮助：点击或拖拽左侧客服至右侧列表! 点此查看图文帮助!" />
+					</h:outputLink>
+					<f:facet name="inline">
+						<h:graphicImage value="/pages/img/help2.jpg" />
+					</f:facet>
+				</p:lightBox>
+				<h:panelGrid columns="2">
+					<h:outputLabel
+						style="color:OrangeRed;text-align:right;font-weight:bold;"
+						value="问：为什么要添加客服？" />
+					<h:outputLabel value="答：添加客服是为了能够在日后统计中将此客服列为绩效考评对象。" />
+				</h:panelGrid>
+			</p:panel>
+			<p:ajaxStatus
+				style="position:absolute;width:61px;height:59px;z-index:20;left:400px;top:200px">
+				<f:facet name="start">
+					<h:graphicImage width="199" height="64"
+						value="../img/ajax_loader.gif" />
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+			<p:dialog header="确认框" widgetVar="confirmation" height="100">
+				<br />
+				<h:outputText value="是否删除    #{staffConfig.selectedStaff} ？" />
+				<br />
+				<br />
+				<p:commandButton value="是" update="staffsTable"
+					oncomplete="confirmation.hide()"
+					actionListener="#{staffConfig.deleteStaff}" />
+				<p:commandButton value="否" onclick="confirmation.hide()"
+					type="button" />
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

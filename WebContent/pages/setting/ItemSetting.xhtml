@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/pages/templates/masterTemplate.xhtml">
+	<ui:define name="content">
+		<h:form>
+			<p:panel header="添加过滤商品">
+				<p:messages id="msg" showDetail="true" />
+				<h:panelGrid columns="4" styleClass="grid">
+					<h:outputText value="不计入统计商品ID（如邮费差价等）：" />
+					<p:inputText id="inputItem" label="商品ID"
+						value="#{itemConfig.addItem}" style="width : 150px;">
+					</p:inputText>
+					<p:commandButton value="添加" disabled="#{naviBean.modifyLock}"
+						actionListener="#{itemConfig.addNoCalCulateItem}"
+						update="noCalculateItemTable growl" />
+					<p:commandButton id="runReportButton" value="[刷新业绩报表]"
+						disabled="#{naviBean.modifyLock}"
+						actionListener="#{itemConfig.runAllStatAchievementReport}"
+						update="msg" />					
+				</h:panelGrid>
+				<h:outputText style="color:OrangeRed;font-weight:bold;" value="觉得业绩不准确？请首先查看剔除商品，剔除商品是不计入统计业绩的商品，差价等请一定放入剔除商品，尤其是以件数来计算业绩的，重要！！！"/>
+				<p:watermark for="inputItem" value="请输入整数，并点击[添加]" />
+				<p:tooltip for="runReportButton"
+					value="点击此按钮，系统将会根据新的过滤商品ID列表，重新计算60天内店铺和客服业绩报表～" />
+			</p:panel>
+			<p:separator />
+			<p:panel header="已添加的过滤商品结果列表">
+				<p:dataTable id="noCalculateItemTable"
+					value="#{itemConfig.noCalculateItems}" var="noCalculateitem">
+					<p:column headerText="已添加商品ID">
+						<p:lightBox iframe="true" width="80%" height="80%">
+							<h:outputLink
+								value="http://item.taobao.com/item.htm?id=#{noCalculateitem.numIid}"
+								title="过滤商品ID，点击可查看明细">
+								<h:outputText value="#{noCalculateitem.numIid}" />
+							</h:outputLink>
+						</p:lightBox>
+					</p:column>
+					<p:column headerText="删除">
+						<p:commandButton oncomplete="confirmation.show()" title="Delete"
+							disabled="#{naviBean.modifyLock}" icon="ui-icon ui-icon-close">
+							<f:setPropertyActionListener value="#{noCalculateitem.numIid}"
+								target="#{itemConfig.selectedItem}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+			<p:separator />
+			<p:panel header="帮助与提示">
+				<h:graphicImage value="/pages/img/nocalculate.jpg"
+					style=" width : 730px;" />
+				<h:panelGrid columns="2">
+					<h:outputLabel
+						style="color:OrangeRed;text-align:right;font-weight:bold;"
+						value="问：什么叫过滤商品？" />
+					<h:outputLabel
+						value="答：过滤商品是店主在客服绩效和工资统计过程中不希望被计入业绩的商品。如补差价链接，补邮费链接等。" />
+					<h:outputLabel
+						style="color:OrangeRed;text-align:right;font-weight:bold;"
+						value="问：为什么要添加过滤商品？" />
+					<h:outputLabel value="答：添加后此ID商品将在工资和业绩计算过程中自动被剔除，使统计结果更加精准。" />
+				</h:panelGrid>
+			</p:panel>
+			<p:dialog header="确认框" widgetVar="confirmation" height="100">
+				<br />
+				<br />
+				<h:outputText value="是否删除    #{itemConfig.selectedItem} ？" />
+				<br />
+				<br />
+				<p:commandButton value="是" update="noCalculateItemTable growl"
+					oncomplete="confirmation.hide()"
+					actionListener="#{itemConfig.deleteNoCalCulateItem}" />
+				<p:commandButton value="否" onclick="confirmation.hide()"
+					type="button" />
+			</p:dialog>
+			<p:ajaxStatus
+				style="position:absolute;width:61px;height:59px;z-index:20;left:400px;top:200px">
+				<f:facet name="start">
+					<h:graphicImage width="199" height="64"
+						value="../img/ajax_loader.gif" />
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+			<p:growl id="growl" showDetail="true" />
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

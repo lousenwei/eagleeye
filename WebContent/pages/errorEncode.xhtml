@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Refresh"
+		content="3; URL=http://container.api.taobao.com/container?appkey=#{user.appKey}" />
+	<ui:include src="/pages/templates/version.xhtml" />
+</h:head>
+
+<h:body>
+	<h1>页面跳转中。。。</h1>
+	<hr />
+	<h3>三秒钟后页面将自动跳转至国标编码页面</h3>
+	<a
+		href="https://oauth.taobao.com/authorize?response_type=code&amp;client_id=#{user.appKey}&amp;redirect_uri=#{user.baseUrl}"
+		style="color: #FF8080;">点此从淘宝免登至鹰眼</a>
+</h:body>
+</html>
